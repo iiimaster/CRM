@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.mryang</groupId>
+  <artifactId>crm</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <!--
+    导入资源
+      1.pom.xml中导入所需的坐标
+      2.web.xml中导入框架所需的环境(配置文件)
+          springmvc的配置文件applicationContext-web.xml
+            i.组件扫描,扫描controller层的注解
+            ii.视图解析器,配置前缀和后缀
+            iii.配置拦截器,权限控制
+            iiii.文件上传解析器
+
+          spring的配置文件,applicationContext-service.xml
+            i.组件扫描,扫描service层的注解
+            ii.声明式事务控制,使用配置文件的方式进行事务控制
+               save/update/delete开头的方法,通过aop+切入点,开启事务控制
+            iii.引入dao配置文件
+
+          mybatis的配置文件applicationContext-mybatis.xml
+            i.数据源连接池配置,加载jdbc.properties属性文件
+               driver/url/username/password
+            ii.SqlSessionFactoryBean注册到spring容器中
+            iii.mapper扫描,将dao包下的所有的接口,扫描到,并且创建代理对象,交给spring容器进行管理
+  -->
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <!-- 导入依赖 -->
+
+  <dependencies>
+    <!--Servlet-->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--JSTL-->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+
+    <!--springmvc依赖-->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>4.3.16.RELEASE</version>
+    </dependency>
+
+    <!--Spring的事务-->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>4.3.16.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>4.3.16.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>4.3.16.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
+      <version>4.3.16.RELEASE</version>
+    </dependency>
+
+    <!--jackson-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+    <!--mybatis-->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>3.4.5</version>
+    </dependency>
+    <!--mysql驱动-->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.9</version>
+    </dependency>
+    <!--连接池-->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.1.12</version>
+    </dependency>
+
+    <!--poi-->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.15</version>
+    </dependency>
+
+    <!-- 文件上传 -->
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <!--
+      如果我们的mybatis的映射配置文件,配置在了java目录下,则必须配置手动加载映射配置文件
+      如果我们的mybatis的映射配置文件,配置在了resources目录下,则不用配置下面的手动加载
+
+      我们系统会自动加载resources下的xml配置文件(映射配置文件,UserDao.xml)
+    -->
+<!--    <resources>
+      <resource>
+        <directory>src/main/java</directory>&lt;!&ndash;所在的目录&ndash;&gt;
+        <includes>&lt;!&ndash;包括目录下的.properties,.xml文件都会扫描到&ndash;&gt;
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+ -->
+    <plugins>
+      <!-- 编码和编译和JDK版本 -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

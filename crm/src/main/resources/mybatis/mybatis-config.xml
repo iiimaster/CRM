@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <!--配置别名-->
+    <typeAliases>
+        <package name="com.mryang.crm.settings.pojo"/>
+        <package name="com.mryang.crm.workbench.pojo"/>
+    </typeAliases>
+
+    <!--配置sql映射文件-->
+<!--    <mappers>-->
+<!--        <package name="com.mryang.crm.settings.mapper"/>-->
+<!--        <package name="com.mryang.crm.workbench.mapper"/>-->
+<!--    </mappers>-->
+
+</configuration>
