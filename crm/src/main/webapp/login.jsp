@@ -40,7 +40,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					dataType:"json",
 					success:function (data) {
 						if(data.success){
-							$("#msg").html(data.msg)
+							// 测试的时候可以这样写
+							// $("#msg").html(data.msg)
+							//跳转到首页面
+							window.location.href = "workbench/toIndex.do";
 						}else{
 							$("#msg").html(data.msg)
 						}

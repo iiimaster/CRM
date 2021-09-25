@@ -1,7 +1,7 @@
 package com.mryang.crm.settings.service;
 
+import com.mryang.crm.exception.LoginException;
 import com.mryang.crm.settings.pojo.User;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Genius
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Service;
 public interface UserService {
 
     // 用户登录
-    User login(String loginAct, String loginPwd);
+    User login(String loginAct, String loginPwd, String ip) throws LoginException;
 
 }

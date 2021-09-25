@@ -1,5 +1,6 @@
 package com.mryang.crm.settings.web.controller;
 
+import com.mryang.crm.exception.LoginException;
 import com.mryang.crm.settings.pojo.User;
 import com.mryang.crm.settings.service.UserService;
 import com.mryang.crm.utils.MD5Util;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,19 +30,25 @@ public class UserController {
 
     /**
      * 登录功能
+     *
      * @param loginAct
      * @param loginPwd
      * @return json串
      */
     @RequestMapping("/login.do")
     @ResponseBody
-    public Map<String, Object> login(String loginAct, String loginPwd, HttpSession session) {
+    public Map<String, Object> login(String loginAct, String loginPwd, HttpServletRequest request) throws LoginException {
+
+        // 获取ip地址
+        String ip = request.getRemoteAddr();
+        System.out.println("当前的ip ::>> "+ip);
+
         // 由于数据库中的密码都是经过MD5的加密算法加密过的，
         // 所以我们在登录的时候需要对密码进行加密操作
         String md5Pwd = MD5Util.getMD5(loginPwd);
 
-        // 根据用户名和密码查询用户信息
-        User loginUser = userService.login(loginAct, md5Pwd);
+        // 根据用户名和密码查询用户信息，是否能够登录
+        User loginUser = userService.login(loginAct, md5Pwd, ip);
 
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -55,7 +63,7 @@ public class UserController {
         resultMap.put("msg", "登录成功");
 
         // 将用户存入到session 中，后续进行权限控制
-        session.setAttribute("user", loginUser);
+        request.getSession().setAttribute("user", loginUser);
 
         return resultMap;
 
