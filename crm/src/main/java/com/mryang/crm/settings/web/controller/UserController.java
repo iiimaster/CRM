@@ -110,10 +110,7 @@ public class UserController {
             response.addCookie(loginActCookie);
             response.addCookie(loginPwdCookie);
 
-        }else{
-            System.out.println("普通登录");
         }
-
 
         // 将用户存入到session 中，后续进行权限控制
         request.getSession().setAttribute("user", loginUser);
@@ -187,10 +184,52 @@ public class UserController {
                 return "redirect:/workbench/toIndex.do";
             }
         }
-
-
         //-------------------------------------10天免登录---------------------------------------
-
         return "/login";
     }
+    @RequestMapping("/logout.do")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        // 1.清理session中的登录用户
+        request.getSession().removeAttribute("user");
+        // 2.清除cookie中的10天免登录操作
+        // 清除cookie中的loginAct和loginPwd
+
+        // --------------方式一:通过遍历的方式进行查询和覆盖--------------
+        Cookie[] cookies = request.getCookies();
+        // if (cookies != null){//只有进行了10天免登录操作才需要清除cookie中的值
+        //     for (Cookie cookie : cookies) {
+        //         if ("loginAct".equals(cookie.getName())){
+        //             // cookie的销毁是没有方法的，只能通过覆盖为空字符串的方式进行销毁
+        //             cookie.setValue("");
+        //         }
+        //         if ("loginPwd".equals(cookie.getName())){
+        //             cookie.setValue("");
+        //         }
+        //         //设置cookie的参数
+        //         cookie.setMaxAge(0);
+        //         cookie.setPath("/");
+        //         // 将cookie写回到客户端
+        //         response.addCookie(cookie);
+        //     }
+        // }
+
+        // --------------方式二:通过遍历的方式进行查询和覆盖--------------
+        //创建两个新的Cookie,将旧的Cookie给覆盖
+        Cookie loginActCookie = new Cookie("loginAct","");
+        Cookie loginPwdCookie = new Cookie("loginPwd","");
+
+        //设置cookie的参数
+        loginActCookie.setMaxAge(0);
+        loginActCookie.setPath("/");
+
+        loginPwdCookie.setMaxAge(0);
+        loginPwdCookie.setPath("/");
+
+        response.addCookie(loginActCookie);
+        response.addCookie(loginPwdCookie);
+
+        // 3.跳转到登录页面
+        return "redirect:/settings/user/toLogin.do";
+    }
+
 }

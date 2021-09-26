@@ -36,7 +36,7 @@
 			$(this).children("a").css("color","white");
 		});
 		
-		
+		// 工作台首页面显示
 		window.open("workbench/toWorkbench.do","workareaFrame");
 		
 	});
@@ -58,12 +58,12 @@
 				</div>
 				<div class="modal-body">
 					<div style="position: relative; left: 40px;">
-						姓名：<b>张三</b><br><br>
-						登录帐号：<b>zhangsan</b><br><br>
-						组织机构：<b>1005，市场部，二级部门</b><br><br>
-						邮箱：<b>zhangsan@bjpowernode.com</b><br><br>
-						失效时间：<b>2017-02-14 10:10:10</b><br><br>
-						允许访问IP：<b>127.0.0.1,192.168.100.2</b>
+						姓名：<b>${user.name}</b><br><br>
+						登录帐号：<b>${user.loginAct}</b><br><br>
+						组织机构：<b>${user.deptno}</b><br><br>
+						邮箱：<b>${user.email}</b><br><br>
+						失效时间：<b>${user.expireTime}</b><br><br>
+						允许访问IP：<b>${user.allowIps}</b>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -130,7 +130,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='../login.jsp';">确定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='settings/user/logout.do';">确定</button>
 				</div>
 			</div>
 		</div>
@@ -143,12 +143,17 @@
 			<ul>
 				<li class="dropdown user-dropdown">
 					<a href="javascript:void(0)" style="text-decoration: none; color: white;" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span> zhangsan <span class="caret"></span>
+						<span class="glyphicon glyphicon-user"></span> ${user.name} <span class="caret"></span>
 					</a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu" style="margin: 0px -63px;min-width:138px;">
 						<li><a href="../settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 我的资料</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
+						<%--
+							data-toggle="modal" ,触发的是模态窗口model
+							data-target="#exitModal" ,打开的是哪个模态窗口
+							模态窗口时由div标签组成，好处：自带动画和渐变效果，用户感受良好
+						--%>
 						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
 					</ul>
 				</li>
