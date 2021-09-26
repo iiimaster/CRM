@@ -1,7 +1,10 @@
 package com.mryang.crm.workbench.web.controller;
 
+import com.mryang.crm.settings.pojo.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Genius
@@ -20,7 +23,17 @@ public class IndexController {
      */
     @RequestMapping("/toIndex.do")
     public String toIndex(){
+
         return "/workbench/index";
+    }
+
+    /**
+     * 工作台-首页显示
+     * @return
+     */
+    @RequestMapping("/toWorkbench.do")
+    public String toWorkbench() {
+        return "/workbench/main/index";
     }
 
 }

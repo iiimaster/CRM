@@ -5,7 +5,7 @@
 </head>
 <body>
 	<script type="text/javascript">
-		document.location.href = "login.jsp";
+		document.location.href = "settings/user/toLogin.do";
 	</script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.mryang.crm.interceptor;
 
+import com.mryang.crm.exception.InterceptorException;
+import com.mryang.crm.settings.pojo.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -7,25 +9,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Genius
- * @version 1.0.0
- * @ClassName LoginInterceptor.java
- * @Description TODO 登录拦截器
- * @createTime 2021年09月24日 11:14:00
+ * TODO 登录拦截器
  */
+
 public class LoginInterceptor implements HandlerInterceptor {
 
     /**
      * 控制器方法执行 之前 执行的方法
-     * @param httpServletRequest
-     * @param httpServletResponse
+     * @param request
+     * @param response
      * @param o
      * @return
      * @throws Exception
      */
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        // 所有请求都放行（暂时）
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
+        // 只有用户登录后才放行
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null){//用户未登录，抛出异常
+            // 异常处理器会帮我们重定向到登录页面
+            throw new InterceptorException();
+        }
         return true;
     }
 

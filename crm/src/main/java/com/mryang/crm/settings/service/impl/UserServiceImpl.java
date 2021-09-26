@@ -30,10 +30,10 @@ public class UserServiceImpl implements UserService {
         // 查询 是否有 对应用户信息
         User user = userMapper.queryLoginUser(loginAct, loginPwd);
 
-        System.out.println("用户信息user ::>> " + user);
+//        System.out.println("用户信息user ::>> " + user);
 
         if (user == null) {// 登录用户不存在
-            return null;
+            throw new LoginException("用户名或密码错误");
         }
 
         // 校验

@@ -36,7 +36,7 @@ public class MyExceptionResolver {
 
         e.printStackTrace();
 
-        return "redirect:/settings/user/toLogin.do";
+        return "redirect:/settings/user/login.do";
 
     }
 

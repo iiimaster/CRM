@@ -18,7 +18,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				// 获取用户名和密码
 				var loginAct = $.trim($("#loginAct").val())
 				var loginPwd = $.trim($("#loginPwd").val())
-				console.log(loginAct+":::>>"+loginPwd)
+				// console.log(loginAct+":::>>"+loginPwd)
 
 				// 校验
 				if (loginAct == ''){
@@ -29,12 +29,15 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					$("#msg").html("请输入密码")
 					return false
 				}
+				// 10天免登录标记
+				var flag = $("#flag").val()
 
 				$.ajax({
 					url:"settings/user/login.do",
 					data:{
 						"loginAct":loginAct,
-						"loginPwd":loginPwd
+						"loginPwd":loginPwd,
+						"flag":flag
 					},
 					type:"post",
 					dataType:"json",
@@ -49,8 +52,20 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						}
 					}
 				})
+			})
 
+			//10天免登录操作
+			// 给复选框添加点击事件
+			$("#loginFlag").click(function () {
+				// 获取复选框状态
+				var flag = $("#loginFlag").prop("checked")
 
+				if (flag){//选中标记
+					$("#flag").val("select")
+				}else{//未选中
+					$("#flag").val("")
+				}
+				// alert($("#flag").val())
 			})
 		})
 	</script>
@@ -78,7 +93,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						<label>
-							<input type="checkbox"> 十天内免登录
+							<input id="loginFlag" type="checkbox" name="autoLogin"> 十天内免登录
+							<input type="hidden" id="flag">
 						</label>
 						&nbsp;&nbsp;
 						<span id="msg" style="color: #ff0000"></span>
