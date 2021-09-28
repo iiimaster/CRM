@@ -16,4 +16,8 @@ public interface UserMapper {
     User queryLoginUser(@Param("loginAct") String loginAct,
                         @Param("loginPwd") String loginPwd);
 
+    int updateUserPwd(@Param("loginId") String loginId,
+                      @Param("newPwd") String newPwd);
+
+
 }

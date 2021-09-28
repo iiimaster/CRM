@@ -4,8 +4,10 @@ import com.mryang.crm.exception.LoginException;
 import com.mryang.crm.settings.mapper.UserMapper;
 import com.mryang.crm.settings.pojo.User;
 import com.mryang.crm.settings.service.UserService;
+import com.mryang.crm.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -47,10 +49,10 @@ public class UserServiceImpl implements UserService {
 
         // 校验过期时间
         String expireTime = user.getExpireTime();
-        System.out.println("过期时间 ::>> "+expireTime);
+//        System.out.println("过期时间 ::>> "+expireTime);
         // 获取现在时间
         String nowTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-        System.out.println("现在时间 ::>> "+nowTime);
+//        System.out.println("现在时间 ::>> "+nowTime);
 
         System.out.println(expireTime.compareTo(nowTime));
         if (expireTime != null) {
@@ -72,12 +74,35 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public User queryUser(String loginAct, String md5OldPwd) {
+        User user = userMapper.queryLoginUser(loginAct, md5OldPwd);
+        if (user == null){
+            return null;
+        }
+        return user;
+    }
+
+    @Override
+    public int updateUserPwd(String loginId, String md5NewPwd) {
+
+        int i = userMapper.updateUserPwd(loginId, md5NewPwd);
+
+        return i;
+    }
+
+
     public static void main(String[] args) {
         String time = "2020/4/5 14:23:34";
         String nowtime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
 
-        System.out.println("nowtime  大于 time (nowtime.compareTo(time))  ::>>> " + nowtime.compareTo(time)); // 1
-        System.out.println("time  小于 nowtime (time.compareTo(nowtime))  ::>>> " + time.compareTo(nowtime)); // -1
+//        System.out.println("nowtime  大于 time (nowtime.compareTo(time))  ::>>> " + nowtime.compareTo(time)); // 1
+//        System.out.println("time  小于 nowtime (time.compareTo(nowtime))  ::>>> " + time.compareTo(nowtime)); // -1
+
+//        System.out.println(zs);
+
+        String md5 = MD5Util.getMD5("1");
+        System.out.println(md5);
 
     }
 }

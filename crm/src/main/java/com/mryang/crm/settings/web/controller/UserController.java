@@ -1,5 +1,6 @@
 package com.mryang.crm.settings.web.controller;
 
+import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.exception.LoginException;
 import com.mryang.crm.settings.pojo.User;
 import com.mryang.crm.settings.service.UserService;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +31,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 登录功能
-     *
-     * @param loginAct
-     * @param loginPwd
+     * 登录页面-登录功能-10天免登录
      * @return json串
      */
     @RequestMapping("/login.do")
@@ -119,6 +116,10 @@ public class UserController {
 
     }
 
+    /**
+     * 跳转到 登录页面
+     * @throws LoginException 自定义异常（登录异常）
+     */
     @RequestMapping("/toLogin.do")
     public String toLogin(HttpServletRequest request) throws LoginException {
         //如果我们的login.jsp页面在webapp目录下
@@ -187,6 +188,10 @@ public class UserController {
         //-------------------------------------10天免登录---------------------------------------
         return "/login";
     }
+
+    /**
+     * 用户退出 操作
+     */
     @RequestMapping("/logout.do")
     public String logout(HttpServletRequest request,HttpServletResponse response){
         // 1.清理session中的登录用户
@@ -195,7 +200,7 @@ public class UserController {
         // 清除cookie中的loginAct和loginPwd
 
         // --------------方式一:通过遍历的方式进行查询和覆盖--------------
-        Cookie[] cookies = request.getCookies();
+        // Cookie[] cookies = request.getCookies();
         // if (cookies != null){//只有进行了10天免登录操作才需要清除cookie中的值
         //     for (Cookie cookie : cookies) {
         //         if ("loginAct".equals(cookie.getName())){
@@ -230,6 +235,67 @@ public class UserController {
 
         // 3.跳转到登录页面
         return "redirect:/settings/user/toLogin.do";
+    }
+
+    /**
+     * 跳转到 系统设置 页面
+     * @return
+     */
+    @RequestMapping("/toSettings.do")
+    public String toSettings(){
+        return "/settings/index";
+    }
+
+
+    /**
+     * 修改密码
+     *
+     * @param oldPwd
+     * @param newPwd
+     * @param confirmPwd
+     * @return
+     */
+    @RequestMapping("/updatePwd.do")
+    @ResponseBody
+    public Map<String, Object> updatePwd(String oldPwd, String newPwd, String confirmPwd, HttpServletRequest request) throws AjaxRequestException {
+
+//        System.out.println(oldPwd);
+//        System.out.println(newPwd);
+//        System.out.println(confirmPwd);
+
+
+        // 从session中获取当前登录的用户
+        User user = (User) request.getSession().getAttribute("user");
+
+        // 将输入的旧密码进行加密，数据库中的密码是加密后的
+        String md5OldPwd = MD5Util.getMD5(oldPwd);
+
+        // 与数据库中的密码进行对比，
+        // 有用户返回表示 旧密码输入正确
+        user = userService.queryUser(user.getLoginAct(), md5OldPwd);
+
+        if (user == null) {// 用户旧密码输入错误
+            throw new AjaxRequestException("旧密码输入有误");
+        }
+        if (newPwd.equals(oldPwd)) {
+            throw new AjaxRequestException("新密码与旧密码不能相同");
+        }
+        if (!newPwd.equals(confirmPwd)) {
+            throw new AjaxRequestException("两次密码输入不一致");
+        }
+
+        // 对新密码进行加密
+        String md5NewPwd = MD5Util.getMD5(newPwd);
+
+        // 修改密码
+        int i = userService.updateUserPwd(user.getId(), md5NewPwd);
+
+        Map<String, Object>  resultMap= new HashMap<>();
+
+        resultMap.put("success",true);
+        resultMap.put("msg","修改成功");
+
+        return resultMap;
     }
 
 }

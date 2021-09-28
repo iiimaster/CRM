@@ -50,6 +50,7 @@ public class MyExceptionResolver {
 
         Map<String,Object> map = new HashMap<>();
         map.put("success",false);
+        map.put("msg",e.getMessage());
 
         return map;
 
