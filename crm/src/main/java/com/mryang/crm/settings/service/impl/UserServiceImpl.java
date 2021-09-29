@@ -101,8 +101,8 @@ public class UserServiceImpl implements UserService {
 
 //        System.out.println(zs);
 
-        String md5 = MD5Util.getMD5("1");
-        System.out.println(md5);
+//        String md5 = MD5Util.getMD5("1");
+//        System.out.println(md5);
 
     }
 }

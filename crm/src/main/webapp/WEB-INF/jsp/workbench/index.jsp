@@ -110,7 +110,7 @@
                 <h4 class="modal-title">修改密码</h4>
             </div>
             <div class="modal-body">
-                <form id="updateUserPwd" class="form-horizontal" role="form">
+                <form class="form-horizontal" role="form">
                     <div class="form-group">
                         <label for="oldPwd" class="col-sm-2 control-label">原密码</label>
                         <div class="col-sm-10" style="width: 300px;">
