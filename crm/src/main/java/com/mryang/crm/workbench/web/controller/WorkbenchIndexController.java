@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/workbench")
-public class IndexController {
+public class WorkbenchIndexController {
 
     /**
      * 跳转到工作台 首页

@@ -180,7 +180,7 @@
                     <span class="glyphicon glyphicon-user"></span> ${user.name} <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" style="margin: 0px -63px;min-width:138px;">
-                    <li><a href="settings/user/toSettings.do"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a>
+                    <li><a href="settings/toSettings.do"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a>
                     </li>
                     <li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span
                             class="glyphicon glyphicon-file"></span> 我的资料</a></li>

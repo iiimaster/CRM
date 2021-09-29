@@ -237,14 +237,7 @@ public class UserController {
         return "redirect:/settings/user/toLogin.do";
     }
 
-    /**
-     * 跳转到 系统设置 页面
-     * @return
-     */
-    @RequestMapping("/toSettings.do")
-    public String toSettings(){
-        return "/settings/index";
-    }
+
 
 
     /**
