@@ -37,7 +37,7 @@
 		});
 		
 		
-		window.open("settings/dictionary/toTypeIndex.do","workareaFrame");
+		window.open("settings/dictionary/type/toTypeIndex.do","workareaFrame");
 		
 	});
 	
@@ -164,8 +164,8 @@
 		<div id="navigation" style="left: 0px; width: 18%; position: relative; height: 100%; overflow:auto;">
 		
 			<ul id="no1" class="nav nav-pills nav-stacked">
-				<li class="liClass"><a href="settings/dictionary/toTypeIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-book"></span> 字典类型</a></li>
-				<li class="liClass"><a href="settings/dictionary/toValueIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-list"></span> 字典值</a></li>
+				<li class="liClass"><a href="settings/dictionary/type/toTypeIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-book"></span> 字典类型</a></li>
+				<li class="liClass"><a href="settings/dictionary/value/toValueIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-list"></span> 字典值</a></li>
 			</ul>
 			
 			<!-- 分割线 -->

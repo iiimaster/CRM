@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mryang.crm.settings.mapper.DictionaryTypeMapper">
+
+    <select id="findAll" resultType="dictionaryType">
+        select * from `tbl_dic_type`
+    </select>
+
+    <insert id="saveType" parameterType="string" >
+        insert into `tbl_dic_type` values(#{code},#{name},#{describe})
+    </insert>
+
+</mapper>
