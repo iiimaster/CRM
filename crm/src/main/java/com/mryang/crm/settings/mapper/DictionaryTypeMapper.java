@@ -23,4 +23,6 @@ public interface DictionaryTypeMapper {
     int saveType(@Param("code") String code,
                  @Param("name") String name,
                  @Param("describe") String describe);
+
+    DictionaryType queryType(String code);
 }

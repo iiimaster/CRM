@@ -25,11 +25,11 @@
                     let html="";
                     if (result.success){//成功加载到数据
                         $.each(result.data, function (i, n) {//i:遍历从0开始，n:单条数据
-                            html += '<tr class="'+(i%2==0?'':'active')+'">'
+                            html += '<tr class="type" class="'+(i%2==0?'':'active')+'">'
                             // html += '<tr class="active">'
                             html += '<td><input name="flag" type="checkbox"/></td>'
-                            html += '<td>'+(i+1)+'</td>'
-                            html += '<td>'+n.code+'</td>'
+                            html += '<td >'+(i+1)+'</td>'
+                            html += '<td name="code'+(i+1)+'">'+n.code+'</td>'
                             html += '<td>'+n.name+'</td>'
                             html += '<td>'+n.description+'</td>'
                             html += '</tr>'
@@ -91,6 +91,9 @@
                 }else{
                     $('#selectAll').prop("checked",false)
                 }
+
+
+
             })
 
             // 4.跳转到保存页面，save.jsp
@@ -113,7 +116,7 @@
         <button type="button" class="btn btn-primary" onclick="window.location.href='settings/dictionary/type/toTypeSave.do'"><span
                 class="glyphicon glyphicon-plus"></span> 创建
         </button>
-        <button type="button" class="btn btn-default" onclick="window.location.href='settings/dictionary/type/toTypeEdit.do?'"><span
+        <button type="button" class="btn btn-default" id="typeEdit" onclick="window.location.href='settings/dictionary/type/toTypeEdit.do?'"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
         <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
@@ -130,7 +133,7 @@
         <tr style="color: #B3B3B3;">
             <td><input type="checkbox" id="selectAll"/></td>
             <td>序号</td>
-            <td>编码</td>
+            <td >编码</td>
             <td>名称</td>
             <td>描述</td>
         </tr>

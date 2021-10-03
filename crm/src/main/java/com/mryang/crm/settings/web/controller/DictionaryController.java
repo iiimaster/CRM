@@ -1,6 +1,7 @@
 package com.mryang.crm.settings.web.controller;
 
 
+import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.settings.pojo.DictionaryType;
 import com.mryang.crm.settings.service.DictionaryTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,18 +77,32 @@ public class DictionaryController {
         return "/settings/dictionary/type/save";
     }
 
+
+    /**
+     * 修改数据页面
+     *
+     * @param code
+     * @param name
+     * @param describe
+     * @return
+     */
     @RequestMapping("/type/typeSave.do")
     @ResponseBody
-    public Map<String, Object> typeSave(String code, String name, String describe) {
+    public Map<String, Object> typeSave(String code, String name, String describe) throws AjaxRequestException {
 
+        // 校验-查询数据字典类型是否存在
+        dictionaryTypeService.checkType(code);
+
+        // 创建map用于存放结果信息
         Map<String, Object> resultMap = new HashMap<>();
 
 //        System.out.println(code+"::>>>"+name+"::>>>"+describe);
-
+        // 添加数据
         dictionaryTypeService.saveType(code, name, describe);
 
-        resultMap.put("success",true);
-        resultMap.put("msg","数据添加成功！");
+        // 数据添加成功
+        resultMap.put("success", true);
+        resultMap.put("msg", "数据添加成功！");
 
         return resultMap;
     }

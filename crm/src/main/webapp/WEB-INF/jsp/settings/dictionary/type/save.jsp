@@ -16,31 +16,34 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 	<script>
 		$(function () {
+
 			$("#TypeSave").click(function () {
 				let code = $("#code").val()
 				let name = $("#name").val()
 				let describe = $("#describe").val()
 
 				$.ajax({
-					url:"settings/dictionary/type/typeSave.do",
-					data:{
-						"code":code,
-						"name":name,
-						"describe":describe
+					url: "settings/dictionary/type/typeSave.do",
+					data: {
+						"code": code,
+						"name": name,
+						"describe": describe
 					},
-					type:"post",
-					dataType:"json",
-					success:function(data){
+					type: "post",
+					dataType: "json",
+					success: function (data) {
 						// console.log(data.success+"::::>>>"+data.msg)
-						if (data.success){
-							window.location.href="settings/dictionary/type/toTypeIndex.do"
-						}else{
-							$("#msg").html(data.msg)
+						if (data.success) {
+							window.location.href = "settings/dictionary/type/toTypeIndex.do"
+						} else {
+							$("#msgcode").html(data.msg)
 						}
 					}
 				})
 			})
+
 		})
+
 	</script>
 </head>
 <body>
@@ -59,6 +62,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			<label for="code" class="col-sm-2 control-label">编码<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control" id="code" style="width: 200%;">
+				<span id="msgcode" style="color: red"></span>
 			</div>
 		</div>
 		
@@ -79,6 +83,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 	</form>
 	
-	<div style="height: 200px;" align="center"><span id="msg" style="color: red"></span></div>
+	<div style="height: 200px;" align="center"></div>
 </body>
 </html>

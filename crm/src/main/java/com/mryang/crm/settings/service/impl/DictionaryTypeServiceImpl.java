@@ -30,13 +30,35 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
     }
 
     @Override
-    public int saveType(String code, String name, String describe) {
-        int i = dictionaryTypeMapper.saveType(code, name, describe);
+    public int saveType(String code, String name, String describe) throws AjaxRequestException {
 
-        System.out.println("i :: >> "+i);
-        if (i<=0){
-            new AjaxRequestException("字典类型保存失败！！！");
+            // 添加数据
+            int i = dictionaryTypeMapper.saveType(code, name, describe);
+            //        System.out.println("i :: >> "+i);
+
+            if (i<=0){
+                throw new AjaxRequestException("字典类型保存失败！！！");
+            }
+
+            return i;
         }
-        return i;
+
+    @Override
+    public void checkType(String code) throws AjaxRequestException {
+
+        if (code == null || code == "") {
+            throw new AjaxRequestException("字典类型编码必须填写");
+        }
+
+        // 根据字典编码查询字典类型
+        DictionaryType checkCode = dictionaryTypeMapper.queryType(code);
+        System.out.println("checkCode :::>> "+checkCode);
+
+        if (checkCode != null) {
+            throw new AjaxRequestException("字典类型已经存在，不能重复添加！");
+        }
+
     }
+
+
 }

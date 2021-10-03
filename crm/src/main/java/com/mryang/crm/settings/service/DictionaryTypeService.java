@@ -1,5 +1,6 @@
 package com.mryang.crm.settings.service;
 
+import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.settings.pojo.DictionaryType;
 
 import java.util.List;
@@ -13,7 +14,13 @@ import java.util.List;
  */
 public interface DictionaryTypeService {
 
+    // 查询所有字典类型
     List<DictionaryType> findAll();
 
-    int saveType(String code, String name, String describe);
+    // 添加字典类型
+    int saveType(String code, String name, String describe) throws AjaxRequestException;
+
+    // 数据校验
+    void checkType(String code) throws AjaxRequestException;
+
 }

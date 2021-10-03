@@ -11,4 +11,8 @@
         insert into `tbl_dic_type` values(#{code},#{name},#{describe})
     </insert>
 
+    <select id="queryType" resultType="dictionaryType">
+        select * from `tbl_dic_type` where code=#{code}
+    </select>
+
 </mapper>

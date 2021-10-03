@@ -41,6 +41,8 @@
             <mvc:exclude-mapping path="/settings/user/login.do"/>
             <!--对跳转到登录页面的请求放行-->
             <mvc:exclude-mapping path="/settings/user/toLogin.do"/>
+            <!--测试使用 - 对跳转到数据字典模块的请求放行-->
+<!--            <mvc:exclude-mapping path="/settings/dictionary/toIndex.do"/>-->
             <!--注册的拦截器-->
             <bean class="com.mryang.crm.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
