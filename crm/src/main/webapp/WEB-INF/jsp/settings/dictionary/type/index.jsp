@@ -25,9 +25,9 @@
                     let html="";
                     if (result.success){//成功加载到数据
                         $.each(result.data, function (i, n) {//i:遍历从0开始，n:单条数据
-                            html += '<tr class="type" class="'+(i%2==0?'':'active')+'">'
+                            html += '<tr class="'+(i%2==0?'':'active')+'">'
                             // html += '<tr class="active">'
-                            html += '<td><input name="flag" type="checkbox"/></td>'
+                            html += '<td><input value="'+n.code+'" name="flag" type="checkbox"/></td>'
                             html += '<td >'+(i+1)+'</td>'
                             html += '<td name="code'+(i+1)+'">'+n.code+'</td>'
                             html += '<td>'+n.name+'</td>'
@@ -97,7 +97,28 @@
             })
 
             // 4.跳转到保存页面，save.jsp
-            // 5.跳转到修改页面，edit.jsp
+            // 5.跳转到修改页面，需要包含所修改数据的主键，edit.jsp
+            $("#typeEdit").click(function () {
+                // 1.只能编辑一条数据
+                // 获取选中的数据条数
+                let $flag = $("input[name=flag]:checked")
+
+                if ($flag.length === 0 ){
+                    // 为选中数据
+                    alert("请选择要编辑的数据")
+                }else if ($flag.length > 1) {
+                    // 选中了多条数据
+                    alert("只能选择一条数据编辑");
+                } else {
+                    // 只选了一条数据
+                    // 获取选中数据的主键
+                    let code = $flag.val()
+                    // 将要编辑的数据主键传递到后台
+                    window.location.href="settings/dictionary/type/toTypeEdit.do?code="+code
+                }
+            })
+
+
 
         })
     </script>
@@ -116,7 +137,7 @@
         <button type="button" class="btn btn-primary" onclick="window.location.href='settings/dictionary/type/toTypeSave.do'"><span
                 class="glyphicon glyphicon-plus"></span> 创建
         </button>
-        <button type="button" class="btn btn-default" id="typeEdit" onclick="window.location.href='settings/dictionary/type/toTypeEdit.do?'"><span
+        <button type="button" class="btn btn-default" id="typeEdit"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
         <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>

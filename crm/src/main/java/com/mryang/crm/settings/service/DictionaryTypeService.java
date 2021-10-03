@@ -1,6 +1,7 @@
 package com.mryang.crm.settings.service;
 
 import com.mryang.crm.exception.AjaxRequestException;
+import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.pojo.DictionaryType;
 
 import java.util.List;
@@ -21,6 +22,10 @@ public interface DictionaryTypeService {
     int saveType(String code, String name, String describe) throws AjaxRequestException;
 
     // 数据校验
-    void checkType(String code) throws AjaxRequestException;
+    DictionaryType checkType(String code) throws AjaxRequestException;
+
+    DictionaryType findByCode(String code) throws TraditionRequestException;
+
+    void updateType(String editId,String code, String name, String describe) throws AjaxRequestException;
 
 }

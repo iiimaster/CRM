@@ -20,9 +20,37 @@ public interface DictionaryTypeMapper {
      */
     List<DictionaryType> findAll();
 
+    /**
+     * 插入数据
+     * @param code
+     * @param name
+     * @param describe
+     * @return
+     */
     int saveType(@Param("code") String code,
                  @Param("name") String name,
                  @Param("describe") String describe);
 
+    /**
+     * 根据主键查询数据
+     * @param code
+     * @return
+     */
     DictionaryType queryType(String code);
+
+    /**
+     * 修改数据
+     * @param editId
+     * @param code
+     * @param name
+     * @param describe
+     * @return
+     */
+    int updateTypeByEditId(
+            @Param("editId") String editId,
+            @Param("code") String code,
+            @Param("name") String name,
+            @Param("describe") String describe);
+
+    int updateType(@Param("code") String code, @Param("name") String name, @Param("describe") String describe);
 }

@@ -15,4 +15,16 @@
         select * from `tbl_dic_type` where code=#{code}
     </select>
 
+    <update id="updateTypeByEditId" >
+        update `tbl_dic_type`
+        set code=#{code},name=#{name},description=#{describe}
+        where code=#{editId}
+    </update>
+
+    <update id="updateType" >
+        update `tbl_dic_type`
+        set name=#{name},description=#{describe}
+        where `code`=#{code}
+    </update>
+
 </mapper>
