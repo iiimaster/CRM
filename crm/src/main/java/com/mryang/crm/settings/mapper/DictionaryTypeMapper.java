@@ -53,4 +53,6 @@ public interface DictionaryTypeMapper {
             @Param("describe") String describe);
 
     int updateType(@Param("code") String code, @Param("name") String name, @Param("describe") String describe);
+
+    int deleteType(String id);
 }

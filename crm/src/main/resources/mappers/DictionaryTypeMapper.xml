@@ -23,8 +23,12 @@
 
     <update id="updateType" >
         update `tbl_dic_type`
-        set name=#{name},description=#{describe}
+        set `name`=#{name},`description`=#{describe}
         where `code`=#{code}
     </update>
+
+    <delete id="deleteType" >
+        delete from `tbl_dic_type` where `code`=#{id}
+    </delete>
 
 </mapper>

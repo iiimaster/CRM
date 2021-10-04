@@ -82,5 +82,20 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
         dictionaryTypeMapper.updateTypeByEditId(editId,code,name,describe);
     }
 
+    @Override
+    public void deleteType(String[] ids) throws AjaxRequestException {
+
+        for (String id : ids) {
+
+            int i = dictionaryTypeMapper.deleteType(id);
+
+//            i=0;
+
+            if (i<=0){
+                throw new AjaxRequestException("数据删除失败");
+            }
+        }
+    }
+
 
 }

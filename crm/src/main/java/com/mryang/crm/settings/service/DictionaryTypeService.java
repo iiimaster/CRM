@@ -28,4 +28,5 @@ public interface DictionaryTypeService {
 
     void updateType(String editId,String code, String name, String describe) throws AjaxRequestException;
 
+    void deleteType(String[] ids) throws AjaxRequestException;
 }
