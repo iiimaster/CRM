@@ -119,47 +119,61 @@
 
             // 6.删除字典类型
 
-            $("#delType").click(function () {
+            // a.点击删除按钮时
+            $("#delBtn").click(function () {
                 // 获取 为选中状态 的复选框
                 let $flag = $("input[name=flag]:checked")
                 // alert($flag.length)
 
-                // 选中状态复选框的主键值
-                let $flagVal = ""
+                if ($flag.length === 0) {
+                    // 未选中数据
+                    $("#delTypeMsg").html("请选择要删除的数据")
+                }else{
+                    // 提示信息
+                    $("#delTypeMsg").html("你确定要删除选中的字典类型数据吗？")
 
-                // 将选中的复选框的主键值进行字符串的拼接
-                for (let i = 0; i < $flag.length; i++) {
-                    if (i === $flag.length - 1) {
-                        $flagVal += $flag.eq(i).val();
-                    } else {
-                        $flagVal += $flag.eq(i).val() + "-"
-                    }
-                }
-                // console.log($flagVal)
+                    // b.确认删除时的操作
+                    $("#delType").click(function () {
 
-                $.ajax({
-                    url: "settings/dictionary/type/delType.do",
-                    data: {
-                        "delTypeIds": $flagVal
-                    },
-                    type: "post",
-                    dataType: "json",
-                    success: function (data) {
+                        // 选中状态复选框的主键值
+                        let $flagVal = ""
 
-                        if (data.success) {
-                            // console.log(data)
-                            window.location.href = "settings/dictionary/type/toTypeIndex.do"
-                        }else{
-                            $("#tbListResult").html(data.msg)
-                            $("#msgDisplay").show()
+                        // 选中数据后
+
+                        // 将选中的复选框的主键值进行字符串的拼接
+                        for (let i = 0; i < $flag.length; i++) {
+                            if (i === $flag.length - 1) {
+                                $flagVal += $flag.eq(i).val();
+                            } else {
+                                $flagVal += $flag.eq(i).val() + "-"
+                            }
                         }
+                        // console.log($flagVal)
 
+                        $.ajax({
+                            url: "settings/dictionary/type/delType.do",
+                            data: {
+                                "delTypeIds": $flagVal
+                            },
+                            type: "post",
+                            dataType: "json",
+                            success: function (data) {
 
-                    }
-                })
+                                if (data.success) {
+                                    // console.log(data)
+                                    window.location.href = "settings/dictionary/type/toTypeIndex.do"
+                                }else{
+                                    $("#tbListResult").html(data.msg)
+                                    $("#msgDisplay").show()
+                                }
 
-
+                            }
+                        })
+                    })
+                }
             })
+
+
 
 
         })
@@ -184,7 +198,7 @@
         <button type="button" class="btn btn-default" id="typeEdit"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal"><span
+        <button id="delBtn" type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal"><span
                 class="glyphicon glyphicon-minus"></span> 删除
         </button>
 
@@ -197,12 +211,12 @@
                                 aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">删除字典类型</h4>
                     </div>
-                    <div class="modal-body">
-                        你确定要删除选中的字典类型数据吗？
+                    <div class="modal-body" id="delTypeMsg">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" id="delType" >确认删除</button>
+                        <button type="button" class="btn btn-primary" id="delType">确认删除</button>
                     </div>
                 </div>
             </div>

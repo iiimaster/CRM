@@ -26,7 +26,7 @@ public interface DictionaryTypeService {
 
     DictionaryType findByCode(String code) throws TraditionRequestException;
 
-    void updateType(String editId,String code, String name, String describe) throws AjaxRequestException;
+    void updateType(String code, String name, String describe) throws TraditionRequestException;
 
     void deleteType(String[] ids) throws AjaxRequestException;
 }

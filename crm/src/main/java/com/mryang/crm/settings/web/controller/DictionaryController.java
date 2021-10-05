@@ -153,16 +153,12 @@ public class DictionaryController {
      */
     @RequestMapping("/type/updateType.do")
     @ResponseBody
-    public Map<String, Object> updateType(String editId, String code, String name, String describe) throws AjaxRequestException {
-        // 1.校验
-        if (code == null || code == "") {
-            throw new AjaxRequestException("字典类型编码必须填写");
-        }
+    public Map<String, Object> updateType(String code, String name, String describe) throws TraditionRequestException {
 
-        // 2.修改
-        dictionaryTypeService.updateType(editId, code, name, describe);
+        // 1.修改
+        dictionaryTypeService.updateType(code, name, describe);
 
-        // 返回结果集
+        // 2.返回结果集
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("success", true);
         resultMap.put("msg", "修改成功");

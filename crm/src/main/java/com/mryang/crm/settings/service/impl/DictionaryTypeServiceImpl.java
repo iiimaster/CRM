@@ -67,19 +67,16 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
     }
 
     @Override
-    public void updateType(String editId,String code, String name, String describe) throws AjaxRequestException {
-
-        // 查询修改后的字典类型-编码是否存在
-        DictionaryType dictionaryType = dictionaryTypeMapper.queryType(code);
-
-        if (editId.equals(code)){ // 未修改数据主键的情况
-            dictionaryTypeMapper.updateType(code,name,describe);// 直接用 原/新 主键修改
-        }else if (dictionaryType != null){// 未修改数据主键的情况下，新的主键数据库中也已经存在，故不能修改
-            throw new AjaxRequestException("要修改的字典类型已存在");
-        }
+    public void updateType(String code, String name, String describe) throws TraditionRequestException {
 
         // 修改原数据的主键，且数据库中没有此数据，则需要通过旧的主键来修改数据
-        dictionaryTypeMapper.updateTypeByEditId(editId,code,name,describe);
+        int i = dictionaryTypeMapper.updateType(code, name, describe);
+
+        if (i<=0){
+            throw new TraditionRequestException("数据修改异常");
+        }
+
+
     }
 
     @Override
