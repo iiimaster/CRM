@@ -32,4 +32,6 @@ public interface DictionaryTypeService {
     void deleteType(String[] ids) throws AjaxRequestException;
 
     List<DictionaryValue> findAllValues();
+
+    int saveValue(String typeCode, String dvValue, String dvText, String dvOrderNo);
 }

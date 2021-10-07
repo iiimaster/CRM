@@ -7,6 +7,7 @@ import com.mryang.crm.settings.mapper.DictionaryTypeMapper;
 import com.mryang.crm.settings.pojo.DictionaryType;
 import com.mryang.crm.settings.pojo.DictionaryValue;
 import com.mryang.crm.settings.service.DictionaryTypeService;
+import com.mryang.crm.utils.UUIDUtil;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,15 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
     @Override
     public List<DictionaryValue> findAllValues() {
         return dictionaryTypeMapper.findAllValues();
+    }
+
+    @Override
+    public int saveValue(String typeCode, String value, String text, String orderNo) {
+
+        // 设置字典值的编号（使用uuid自动生成32位编码，与数据库吻合）
+        String uuid = UUIDUtil.getUUID();
+
+        return dictionaryTypeMapper.saveValue(uuid ,typeCode, value, text, orderNo);
     }
 
 

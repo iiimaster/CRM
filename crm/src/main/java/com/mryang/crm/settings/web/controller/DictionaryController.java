@@ -1,6 +1,7 @@
 package com.mryang.crm.settings.web.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mryang.crm.exception.AjaxRequestException;
@@ -151,6 +152,7 @@ public class DictionaryController {
 
     /**
      * 修改数据
+     *
      * @param code     修改后的主键
      * @param name     修改后的名称
      * @param describe 修改后的描述
@@ -209,11 +211,11 @@ public class DictionaryController {
 
         List<DictionaryValue> values = dictionaryTypeService.findAllValues();
 
-        if (values == null && values.size()==0){
+        if (values == null && values.size() == 0) {
             throw new TraditionRequestException("数据加载失败");
         }
 
-        model.addAttribute("values",values);
+        model.addAttribute("values", values);
 
         return "/settings/dictionary/value/index";
     }
@@ -221,6 +223,7 @@ public class DictionaryController {
 
     /**
      * 分页操作-展示数据-pageHelper插件实现
+     *
      * @return
      */
     @RequestMapping("/value/queryByPageHelper.do")
@@ -247,21 +250,58 @@ public class DictionaryController {
 
 
         // 获取要 加载页 的 第一条数据索引(数据库数据索引从0开始)
-        int pageNum = (page-1) * pageSize;
-        model.addAttribute("pageNum",pageNum);
+        int pageNum = (page - 1) * pageSize;
+        model.addAttribute("pageNum", pageNum);
 
         // 当前页码
-        model.addAttribute("pageNow",page);
+        model.addAttribute("pageNow", page);
 
         // 将数据放入作用域
-        model.addAttribute("values",pageInfo.getList());
-        model.addAttribute("pages",pages);
+        model.addAttribute("values", pageInfo.getList());
+        model.addAttribute("pages", pages);
 //        System.out.println("pageInfo.getList() ::>>> "+pageInfo.getList());
 
 
         // 转发到列表页
         return "/settings/dictionary/value/index";
     }
+
+    @RequestMapping("/value/toValueSave.do")
+    public String toValueSave(Model model) {
+
+        // 查询字典类型
+        List<DictionaryType> types = dictionaryTypeService.findAll();
+
+        // 将数据放入作用域
+        model.addAttribute("types", types);
+
+        return "/settings/dictionary/value/save";
+    }
+
+
+    @RequestMapping("/value/saveValue.do")
+    @ResponseBody
+    public Map<String, Object> saveValue(String typeCode,
+                                         String value,
+                                         String text,
+                                         String orderNo) throws TraditionRequestException {
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        // 保存（添加）字典值
+        int i = dictionaryTypeService.saveValue(typeCode, value, text, orderNo);
+
+        if (i<=0){// 添加失败
+            throw new TraditionRequestException("数据字典值添加失败");
+        }else {
+            resultMap.put("success",true);
+            resultMap.put("msg","数据字典值添加成功.");
+        }
+
+        return resultMap;
+
+    }
+
 
     // -------------------------------字典值-模块-------------------------------
 

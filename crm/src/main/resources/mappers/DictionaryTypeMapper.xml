@@ -40,4 +40,9 @@
         from `tbl_dic_value`
     </select>
 
+    <insert id="saveValue" parameterType="dictionaryValue">
+        insert into `tbl_dic_value`(`id`,`typeCode`, `value`, `text`, `orderNo`)
+        values(#{uuid},#{typeCode},#{value},#{text},#{orderNo})
+    </insert>
+
 </mapper>

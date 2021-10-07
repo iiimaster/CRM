@@ -58,4 +58,11 @@ public interface DictionaryTypeMapper {
     int deleteType(String id);
 
     List<DictionaryValue> findAllValues();
+
+    int saveValue(@Param("uuid") String uuid,
+                  @Param("typeCode") String typeCode,
+                  @Param("value") String value,
+                  @Param("text") String text,
+                  @Param("orderNo") String orderNo);
+
 }
