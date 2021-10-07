@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
-<%
-String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 	request.getServerPort() + request.getContextPath() + "/";
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 	request.getServerPort() + request.getContextPath() + "/";%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +10,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+
+	<script>
+
+	</script>
 </head>
 <body>
 
@@ -29,7 +32,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		</div>
 	</div>
 	<div style="position: relative; left: 30px; top: 20px;">
-		<table class="table table-hover">
+		<table class="table table-hover" style=" height: 438px">
 			<thead>
 				<tr style="color: #B3B3B3;">
 					<td><input type="checkbox" /></td>
@@ -40,50 +43,51 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<td>字典类型编码</td>
 				</tr>
 			</thead>
-			<tbody>
-				<tr class="active">
+			<tbody  >
+			<c:forEach items="${values}" var="value" varStatus="idstatus">
+				<tr class="${idstatus.index % 2==0 ? '':'active'}">
 					<td><input type="checkbox" /></td>
-					<td>1</td>
-					<td>m</td>
-					<td>男</td>
-					<td>1</td>
-					<td>sex</td>
+					<td>${value.id}</td>
+					<td>${value.value}</td>
+					<td>${value.text}</td>
+					<td>${value.orderNo}</td>
+					<td>${value.typeCode}</td>
 				</tr>
-				<tr>
-					<td><input type="checkbox" /></td>
-					<td>2</td>
-					<td>f</td>
-					<td>女</td>
-					<td>2</td>
-					<td>sex</td>
-				</tr>
-				<tr class="active">
-					<td><input type="checkbox" /></td>
-					<td>3</td>
-					<td>1</td>
-					<td>一级部门</td>
-					<td>1</td>
-					<td>orgType</td>
-				</tr>
-				<tr>
-					<td><input type="checkbox" /></td>
-					<td>4</td>
-					<td>2</td>
-					<td>二级部门</td>
-					<td>2</td>
-					<td>orgType</td>
-				</tr>
-				<tr class="active">
-					<td><input type="checkbox" /></td>
-					<td>5</td>
-					<td>3</td>
-					<td>三级部门</td>
-					<td>3</td>
-					<td>orgType</td>
-				</tr>
+			</c:forEach>
 			</tbody>
 		</table>
+
+		<div align="center">
+
+
+
+		<%-- 使用 pageHelper-bootstrap 实现分页功能  --%>
+		<nav aria-label="Page navigation">
+			<ul class="pagination">
+				<c:if test="${pageNow>1}">
+					<li>
+						<a href="settings/dictionary/value/queryByPageHelper.do?page=${pageNow-1}" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+				</c:if>
+
+				<c:forEach begin="1" end="${pages}" var="page">
+					<li><a href="settings/dictionary/value/queryByPageHelper.do?page=${page}">${page}</a></li>
+				</c:forEach>
+				<c:if test="${pageNow < pages}">
+					<li>
+					<li>
+						<a href="settings/dictionary/value/queryByPageHelper.do?page=${pageNow+1}" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+					</li>
+				</c:if>
+			</ul>
+		</nav>
+		</div>
 	</div>
-	
+
 </body>
 </html>

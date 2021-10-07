@@ -1,6 +1,7 @@
 package com.mryang.crm.settings.mapper;
 
 import com.mryang.crm.settings.pojo.DictionaryType;
+import com.mryang.crm.settings.pojo.DictionaryValue;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -55,4 +56,6 @@ public interface DictionaryTypeMapper {
     int updateType(@Param("code") String code, @Param("name") String name, @Param("describe") String describe);
 
     int deleteType(String id);
+
+    List<DictionaryValue> findAllValues();
 }

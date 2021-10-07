@@ -26,6 +26,21 @@
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
         <!-- 扫描sql映射文件 -->
         <property name="mapperLocations" value="classpath:mappers/*Mapper.xml"/>
+
+        <!--配置Mybatis分页插件:PageHelper-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <props>
+                            <!--dialect:数据库方言-->
+                            <prop key="dialect">mysql</prop>
+                            <prop key="supportMethodsArguments">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!--声明MyBatis的扫描器-->
@@ -35,6 +50,7 @@
             com.mryang.crm.workbench.mapper" />
 
     </bean>
+
 
 
 </beans>

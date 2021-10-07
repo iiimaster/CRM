@@ -3,6 +3,7 @@ package com.mryang.crm.settings.service;
 import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.pojo.DictionaryType;
+import com.mryang.crm.settings.pojo.DictionaryValue;
 
 import java.util.List;
 
@@ -29,4 +30,6 @@ public interface DictionaryTypeService {
     void updateType(String code, String name, String describe) throws TraditionRequestException;
 
     void deleteType(String[] ids) throws AjaxRequestException;
+
+    List<DictionaryValue> findAllValues();
 }

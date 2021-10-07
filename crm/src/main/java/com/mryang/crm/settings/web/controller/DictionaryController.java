@@ -1,22 +1,28 @@
 package com.mryang.crm.settings.web.controller;
 
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.pojo.DictionaryType;
+import com.mryang.crm.settings.pojo.DictionaryValue;
 import com.mryang.crm.settings.service.DictionaryTypeService;
-import org.apache.poi.ss.formula.functions.IDStarAlgorithm;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * @author Genius
@@ -31,6 +37,8 @@ public class DictionaryController {
 
     @Autowired
     private DictionaryTypeService dictionaryTypeService;
+
+    private int pageSize = 10;
 
     /**
      * 跳转 数据字典模块 首页
@@ -143,8 +151,6 @@ public class DictionaryController {
 
     /**
      * 修改数据
-     *
-     * @param editId   要修改数据的主键值
      * @param code     修改后的主键
      * @param name     修改后的名称
      * @param describe 修改后的描述
@@ -199,11 +205,67 @@ public class DictionaryController {
      * @return
      */
     @RequestMapping("/value/toValueIndex.do")
-    public String toValueIndex() {
+    public String toValueIndex(Model model) throws TraditionRequestException {
+
+        List<DictionaryValue> values = dictionaryTypeService.findAllValues();
+
+        if (values == null && values.size()==0){
+            throw new TraditionRequestException("数据加载失败");
+        }
+
+        model.addAttribute("values",values);
+
+        return "/settings/dictionary/value/index";
+    }
+
+
+    /**
+     * 分页操作-展示数据-pageHelper插件实现
+     * @return
+     */
+    @RequestMapping("/value/queryByPageHelper.do")
+    public String queryByPageHelper(@RequestParam(defaultValue = "1") int page,
+                                    Model model) {
+        // 等同于 limit a,b  使用拦截器实现的
+        PageHelper.startPage(page, pageSize);
+
+        // 查询数据
+        List<DictionaryValue> values = dictionaryTypeService.findAllValues();
+        PageInfo pageInfo = new PageInfo<DictionaryValue>(values);
+
+//        System.out.println("values :::>>> "+values.toString());
+//        System.out.println("pageInfo :::>>> "+pageInfo);
+
+
+        // 总记录数
+        Long count = pageInfo.getTotal();
+        // 总页数
+        int pages = pageInfo.getPages();
+
+//        System.out.println("count :::>>> "+count);
+//        System.out.println("pages :::>>> "+pages);
+
+
+        // 获取要 加载页 的 第一条数据索引(数据库数据索引从0开始)
+        int pageNum = (page-1) * pageSize;
+        model.addAttribute("pageNum",pageNum);
+
+        // 当前页码
+        model.addAttribute("pageNow",page);
+
+        // 将数据放入作用域
+        model.addAttribute("values",pageInfo.getList());
+        model.addAttribute("pages",pages);
+//        System.out.println("pageInfo.getList() ::>>> "+pageInfo.getList());
+
+
+        // 转发到列表页
         return "/settings/dictionary/value/index";
     }
 
     // -------------------------------字典值-模块-------------------------------
 
-
 }
+
+
+

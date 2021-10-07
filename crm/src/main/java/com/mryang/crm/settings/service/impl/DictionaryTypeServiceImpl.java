@@ -5,6 +5,7 @@ import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.mapper.DictionaryTypeMapper;
 import com.mryang.crm.settings.pojo.DictionaryType;
+import com.mryang.crm.settings.pojo.DictionaryValue;
 import com.mryang.crm.settings.service.DictionaryTypeService;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,11 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
                 throw new AjaxRequestException("数据删除失败");
             }
         }
+    }
+
+    @Override
+    public List<DictionaryValue> findAllValues() {
+        return dictionaryTypeMapper.findAllValues();
     }
 
 
