@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mryang.crm.settings.mapper.DictionaryValueMapper">
+    <sql id="value">`id`,`value`,`text`,`orderNo`,`typeCode`</sql>
+
+    <select id="findAllValues" resultType="dictionaryValue">
+        select <include refid="value" />
+        from `tbl_dic_value`
+    </select>
+
+    <insert id="saveValue" parameterType="dictionaryValue">
+        insert into `tbl_dic_value`(`id`,`typeCode`, `value`, `text`, `orderNo`)
+        values(#{uuid},#{typeCode},#{value},#{text},#{orderNo})
+    </insert>
+
+    <select id="findValueById" resultType="dictionaryValue">
+        select <include refid="value"/>
+        from `tbl_dic_value` where id=#{id}
+    </select>
+
+    <update id="updateValue" parameterType="dictionaryValue">
+        update `tbl_dic_value`
+        <set>
+            <if test="typeCode != null and typeCode != ''">
+                `typeCode`=#{typeCode},
+            </if>
+            <if test="value != null and value != ''">
+                `value`=#{value},
+            </if>
+            <if test="value != null">
+                `text`=#{text},
+            </if>
+            <if test="value != null">
+                `orderNo`=#{orderNo},
+            </if>
+        </set>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteValueById">
+        delete from `tbl_dic_value`
+        where id=#{id}
+    </delete>
+
+    <delete id="deleteValueByTypeCode" >
+        delete from `tbl_dic_value`
+        where typeCode=#{id}
+    </delete>
+
+</mapper>

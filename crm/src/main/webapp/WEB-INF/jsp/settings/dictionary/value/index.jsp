@@ -63,6 +63,57 @@
 
             })
 
+            // 3.删除操作
+            // a.点击删除按钮时
+            $("#delBtn").click(function () {
+
+                // 获取要删除的id
+                let $flag = $(".flag:checked")
+
+                if ($flag.length === 0) {
+                    // 未选中数据
+                    $("#delTypeMsg").html("请选择要删除的数据")
+                }else {
+                    // 提示信息
+                    $("#delTypeMsg").html("你确定要删除选中的字典类型数据吗？")
+
+                    // b.点击确认删除时
+                    $("#delValue").click(function () {
+
+                        // 将要删除的id拼接成以-隔开的字符串
+                        let ids=""
+
+                        for (let i=0;i<$flag.length;i++){
+                            if (i===$flag.length-1){
+                                ids += $.trim($flag.eq(i).val())
+                            }else{
+
+                                ids += $.trim($flag.eq(i).val())+"-"
+                            }
+                        }
+
+                        $.ajax({
+                            url:"settings/dictionary/value/deleteValueById.do",
+                            data:{
+                                "ids":ids
+                            },
+                            type:"post",
+                            dataType:"json",
+                            success:function(data){
+                                if (data.success){
+                                    window.location.href="settings/dictionary/value/queryByPageHelper.do"
+                                }else{
+                                    $("#errorMsg").html(data.msg)
+                                    $("#myErrorDiv").show()
+                                }
+                            }
+                        })
+
+                    })
+
+                }
+
+            })
 
         })
 
@@ -81,17 +132,48 @@
 <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;left: 30px;">
     <div class="btn-group" style="position: relative; top: 18%;">
         <button type="button" class="btn btn-primary"
-                onclick="window.location.href='settings/dictionary/value/toValueSave.do'"><span
-                class="glyphicon glyphicon-plus"></span> 创建
+                onclick="window.location.href='settings/dictionary/value/toValueSave.do'">
+            <span class="glyphicon glyphicon-plus"></span> 创建
         </button>
-        <button type="button" class="btn btn-default" id="toEditValue" ><span
-                class="glyphicon glyphicon-edit"></span> 编辑
+        <button type="button" class="btn btn-default" id="toEditValue" >
+            <span class="glyphicon glyphicon-edit"></span> 编辑
         </button>
-        <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+        <button type="button" class="btn btn-danger" id="delBtn" data-toggle="modal" data-target="#myModal">
+            <span class="glyphicon glyphicon-minus"></span> 删除
+        </button>
+
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">删除字典值</h4>
+            </div>
+            <div class="modal-body" id="delTypeMsg"><%--展示提示信息--%></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="delValue">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%--隐藏域 成功--%>
+<%--	<div id="mySuccessDiv" class="alert alert-success alert-dismissible" role="alert"  align="center" style="display: none">--%>
+<%--		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--		<strong>Success!</strong> <span id="successMsg"></span>--%>
+<%--	</div>--%>
+    <div id="myErrorDiv" class="alert alert-danger alert-dismissible" role="alert"  align="center" style="display: none">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Danger!</strong> <span id="errorMsg"></span>
+    </div>
 <div style="position: relative; left: 30px; top: 20px;">
-    <table class="table table-hover" style=" height: 438px">
+    <table class="table table-hover" >
         <thead>
         <tr style="color: #B3B3B3;">
             <td><input type="checkbox" id="ckAll"/></td>

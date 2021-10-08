@@ -40,40 +40,5 @@
         delete from `tbl_dic_type` where `code`=#{id}
     </delete>
 
-    <sql id="value">`id`,`value`,`text`,`orderNo`,`typeCode`</sql>
-
-    <select id="findAllValues" resultType="dictionaryValue">
-        select <include refid="value" />
-        from `tbl_dic_value`
-    </select>
-
-    <insert id="saveValue" parameterType="dictionaryValue">
-        insert into `tbl_dic_value`(`id`,`typeCode`, `value`, `text`, `orderNo`)
-        values(#{uuid},#{typeCode},#{value},#{text},#{orderNo})
-    </insert>
-
-    <select id="findValueById" resultType="dictionaryValue">
-        select <include refid="value"/>
-        from `tbl_dic_value` where id=#{id}
-    </select>
-
-    <update id="updateValue" parameterType="dictionaryValue">
-        update `tbl_dic_value`
-        <set>
-            <if test="typeCode != null and typeCode != ''">
-                `typeCode`=#{typeCode},
-            </if>
-            <if test="value != null and value != ''">
-                `value`=#{value},
-            </if>
-            <if test="value != null">
-                `text`=#{text},
-            </if>
-            <if test="value != null">
-                `orderNo`=#{orderNo},
-            </if>
-        </set>
-        where `id` = #{id}
-    </update>
 
 </mapper>

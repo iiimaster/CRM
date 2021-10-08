@@ -1,7 +1,6 @@
 package com.mryang.crm.settings.web.controller;
 
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mryang.crm.exception.AjaxRequestException;
@@ -10,7 +9,7 @@ import com.mryang.crm.settings.pojo.DictionaryType;
 import com.mryang.crm.settings.pojo.DictionaryValue;
 import com.mryang.crm.settings.service.DictionaryTypeService;
 
-import org.apache.poi.ss.formula.udf.IndexedUDFFinder;
+import com.mryang.crm.settings.service.DictionaryValueService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -40,6 +39,9 @@ public class DictionaryController {
 
     @Autowired
     private DictionaryTypeService dictionaryTypeService;
+
+    @Autowired
+    private DictionaryValueService dictionaryValueService;
 
     private int pageSize = 10;
 
@@ -211,7 +213,7 @@ public class DictionaryController {
     @RequestMapping("/value/toValueIndex.do")
     public String toValueIndex(Model model) throws TraditionRequestException {
 
-        List<DictionaryValue> values = dictionaryTypeService.findAllValues();
+        List<DictionaryValue> values = dictionaryValueService.findAllValues();
 
         if (values == null && values.size() == 0) {
             throw new TraditionRequestException("数据加载失败");
@@ -235,7 +237,7 @@ public class DictionaryController {
         PageHelper.startPage(page, pageSize);
 
         // 查询数据
-        List<DictionaryValue> values = dictionaryTypeService.findAllValues();
+        List<DictionaryValue> values = dictionaryValueService.findAllValues();
         PageInfo pageInfo = new PageInfo<DictionaryValue>(values);
 
 //        System.out.println("values :::>>> "+values.toString());
@@ -291,13 +293,13 @@ public class DictionaryController {
         HashMap<String, Object> resultMap = new HashMap<>();
 
         // 保存（添加）字典值
-        int i = dictionaryTypeService.saveValue(typeCode, value, text, orderNo);
+        int i = dictionaryValueService.saveValue(typeCode, value, text, orderNo);
 
-        if (i<=0){// 添加失败
+        if (i <= 0) {// 添加失败
             throw new TraditionRequestException("数据字典值添加失败");
-        }else {
-            resultMap.put("success",true);
-            resultMap.put("msg","数据字典值添加成功.");
+        } else {
+            resultMap.put("success", true);
+            resultMap.put("msg", "数据字典值添加成功.");
         }
 
         return resultMap;
@@ -306,11 +308,11 @@ public class DictionaryController {
 
 
     @RequestMapping("/value/toEditValue.do")
-    public String toEditValue(String id,Model model) throws TraditionRequestException {
+    public String toEditValue(String id, Model model) throws TraditionRequestException {
         // 根据id查询字典值
-        DictionaryValue value = dictionaryTypeService.findValueById(id);
+        DictionaryValue value = dictionaryValueService.findValueById(id);
 
-        if (value == null){
+        if (value == null) {
             throw new TraditionRequestException("要修改的数据不存在！");
         }
 
@@ -322,27 +324,40 @@ public class DictionaryController {
 
     @RequestMapping("/value/editValue.do")
     @ResponseBody
-    public Map<String,Object> editValue(DictionaryValue dictionaryValue) throws TraditionRequestException {
+    public Map<String, Object> editValue(DictionaryValue dictionaryValue) throws TraditionRequestException {
 
 //        System.out.println(dictionaryValue);
 
         // 修改数据
-        int i = dictionaryTypeService.updateValue(dictionaryValue);
+        int i = dictionaryValueService.updateValue(dictionaryValue);
 
         HashMap<String, Object> resultMap = new HashMap<>();
 
-        if (i<=0){
-            resultMap.put("success",false);
-            resultMap.put("msg","修改失败");
-        }else{
-            resultMap.put("success",true);
-            resultMap.put("msg","修改成功");
+        if (i <= 0) {
+            resultMap.put("success", false);
+            resultMap.put("msg", "修改失败");
+        } else {
+            resultMap.put("success", true);
+            resultMap.put("msg", "修改成功");
         }
 
         return resultMap;
     }
 
+    @RequestMapping("/value/deleteValueById.do")
+    @ResponseBody
+    public Map<String, Object> deleteValueById(String ids) throws TraditionRequestException {
 
+        // 删除操作
+        dictionaryValueService.deleteValueById(ids);
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        resultMap.put("success", true);
+        resultMap.put("msg", "数据删除成功！");
+
+        return resultMap;
+    }
 
 
     // -------------------------------字典值-模块-------------------------------

@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.visitor.functions.If;
 import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.mapper.DictionaryTypeMapper;
+import com.mryang.crm.settings.mapper.DictionaryValueMapper;
 import com.mryang.crm.settings.pojo.DictionaryType;
 import com.mryang.crm.settings.pojo.DictionaryValue;
 import com.mryang.crm.settings.service.DictionaryTypeService;
@@ -26,6 +27,8 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
 
     @Autowired
     private DictionaryTypeMapper dictionaryTypeMapper;
+    @Autowired
+    private DictionaryValueMapper dictionaryValueMapper;
 
     @Override
     public List<DictionaryType> findAll() {
@@ -86,6 +89,14 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
 
         for (String id : ids) {
 
+            // 因字典类型表的数据与字典值表的数据有关联，
+            // 在删除数据时，要先删除多方数据，再删除一方数据
+            // 即先删除字典值表中的相关数据，在删除指点类型表中的对应数据
+
+            // 多方
+            dictionaryValueMapper.deleteValueByTypeCode(id);
+
+            // 一方
             int i = dictionaryTypeMapper.deleteType(id);
 
 //            i=0;
@@ -96,29 +107,7 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
         }
     }
 
-    @Override
-    public List<DictionaryValue> findAllValues() {
-        return dictionaryTypeMapper.findAllValues();
-    }
 
-    @Override
-    public int saveValue(String typeCode, String value, String text, String orderNo) {
-
-        // 设置字典值的编号（使用uuid自动生成32位编码，与数据库吻合）
-        String uuid = UUIDUtil.getUUID();
-
-        return dictionaryTypeMapper.saveValue(uuid ,typeCode, value, text, orderNo);
-    }
-
-    @Override
-    public DictionaryValue findValueById(String id) {
-        return dictionaryTypeMapper.findValueById(id);
-    }
-
-    @Override
-    public int updateValue(DictionaryValue dictionaryValue) {
-        return dictionaryTypeMapper.updateValue(dictionaryValue);
-    }
 
 
 }
