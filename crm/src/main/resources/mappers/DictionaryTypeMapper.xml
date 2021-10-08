@@ -25,7 +25,14 @@
 
     <update id="updateType" >
         update `tbl_dic_type`
-        set `name`=#{name},`description`=#{describe}
+        <set>
+            <if test="name != null and name != ''">
+                `name`=#{name},
+            </if>
+            <if test="describe != null and describe != ''">
+                `description`=#{describe},
+            </if>
+        </set>
         where `code`=#{code}
     </update>
 
@@ -44,5 +51,29 @@
         insert into `tbl_dic_value`(`id`,`typeCode`, `value`, `text`, `orderNo`)
         values(#{uuid},#{typeCode},#{value},#{text},#{orderNo})
     </insert>
+
+    <select id="findValueById" resultType="dictionaryValue">
+        select <include refid="value"/>
+        from `tbl_dic_value` where id=#{id}
+    </select>
+
+    <update id="updateValue" parameterType="dictionaryValue">
+        update `tbl_dic_value`
+        <set>
+            <if test="typeCode != null and typeCode != ''">
+                `typeCode`=#{typeCode},
+            </if>
+            <if test="value != null and value != ''">
+                `value`=#{value},
+            </if>
+            <if test="value != null">
+                `text`=#{text},
+            </if>
+            <if test="value != null">
+                `orderNo`=#{orderNo},
+            </if>
+        </set>
+        where `id` = #{id}
+    </update>
 
 </mapper>

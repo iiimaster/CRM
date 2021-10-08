@@ -10,6 +10,7 @@ import com.mryang.crm.settings.pojo.DictionaryType;
 import com.mryang.crm.settings.pojo.DictionaryValue;
 import com.mryang.crm.settings.service.DictionaryTypeService;
 
+import org.apache.poi.ss.formula.udf.IndexedUDFFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
+import javax.xml.transform.Result;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -301,6 +303,46 @@ public class DictionaryController {
         return resultMap;
 
     }
+
+
+    @RequestMapping("/value/toEditValue.do")
+    public String toEditValue(String id,Model model) throws TraditionRequestException {
+        // 根据id查询字典值
+        DictionaryValue value = dictionaryTypeService.findValueById(id);
+
+        if (value == null){
+            throw new TraditionRequestException("要修改的数据不存在！");
+        }
+
+        // 将数据放入作用域
+        model.addAttribute("value", value);
+
+        return "/settings/dictionary/value/edit";
+    }
+
+    @RequestMapping("/value/editValue.do")
+    @ResponseBody
+    public Map<String,Object> editValue(DictionaryValue dictionaryValue) throws TraditionRequestException {
+
+//        System.out.println(dictionaryValue);
+
+        // 修改数据
+        int i = dictionaryTypeService.updateValue(dictionaryValue);
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        if (i<=0){
+            resultMap.put("success",false);
+            resultMap.put("msg","修改失败");
+        }else{
+            resultMap.put("success",true);
+            resultMap.put("msg","修改成功");
+        }
+
+        return resultMap;
+    }
+
+
 
 
     // -------------------------------字典值-模块-------------------------------

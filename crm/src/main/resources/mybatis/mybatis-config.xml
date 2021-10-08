@@ -13,10 +13,10 @@
     </typeAliases>
 
     <!--配置sql映射文件-->
-<!--    <mappers>-->
-<!--        <package name="com.mryang.crm.settings.mapper"/>-->
-<!--        <package name="com.mryang.crm.workbench.mapper"/>-->
-<!--    </mappers>-->
+    <mappers>
+        <package name="com.mryang.crm.settings.mapper"/>
+        <package name="com.mryang.crm.workbench.mapper"/>
+    </mappers>
 
 
 

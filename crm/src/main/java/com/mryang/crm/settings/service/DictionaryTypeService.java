@@ -34,4 +34,8 @@ public interface DictionaryTypeService {
     List<DictionaryValue> findAllValues();
 
     int saveValue(String typeCode, String dvValue, String dvText, String dvOrderNo);
+
+    DictionaryValue findValueById(String id);
+
+    int updateValue(DictionaryValue dictionaryValue);
 }

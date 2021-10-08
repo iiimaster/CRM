@@ -65,4 +65,8 @@ public interface DictionaryTypeMapper {
                   @Param("text") String text,
                   @Param("orderNo") String orderNo);
 
+    DictionaryValue findValueById(String id);
+
+    int updateValue(DictionaryValue dictionaryValue);
+
 }

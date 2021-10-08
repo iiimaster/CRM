@@ -110,5 +110,15 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
         return dictionaryTypeMapper.saveValue(uuid ,typeCode, value, text, orderNo);
     }
 
+    @Override
+    public DictionaryValue findValueById(String id) {
+        return dictionaryTypeMapper.findValueById(id);
+    }
+
+    @Override
+    public int updateValue(DictionaryValue dictionaryValue) {
+        return dictionaryTypeMapper.updateValue(dictionaryValue);
+    }
+
 
 }

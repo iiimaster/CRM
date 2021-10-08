@@ -14,7 +14,7 @@
     <script>
 
         $(function () {
-            // 全选/全不选
+            // 1.全选/全不选
             $("#ckAll").click(function () {
                 // 获取全选框的选中状态
                 let ck = $("#ckAll").prop("checked")
@@ -43,6 +43,27 @@
                     $("#ckAll").prop("checked",false)
                 }
             })
+
+
+            // 2.跳转到修改操作页面，edit.jsp
+            $("#toEditValue").click(function () {
+                let $flag = $(".flag:checked")
+
+                if ($flag.length === 0){
+                    alert("请选择要修改的数据")
+
+                }else if ($flag.length > 1){
+                    alert("只能选择一条数据")
+                }else{
+                    // 获取要修改的id
+                    let id = $flag.val()
+                    // 将数据传递到后台
+                    window.location.href="settings/dictionary/value/toEditValue.do?id="+id
+                }
+
+            })
+
+
         })
 
 
@@ -63,7 +84,7 @@
                 onclick="window.location.href='settings/dictionary/value/toValueSave.do'"><span
                 class="glyphicon glyphicon-plus"></span> 创建
         </button>
-        <button type="button" class="btn btn-default" onclick="window.location.href='edit.jsp'"><span
+        <button type="button" class="btn btn-default" id="toEditValue" ><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
         <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
