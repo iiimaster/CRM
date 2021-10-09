@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Genius
@@ -89,6 +90,11 @@ public class UserServiceImpl implements UserService {
         int i = userMapper.updateUserPwd(loginId, md5NewPwd);
 
         return i;
+    }
+
+    @Override
+    public List<User> queryAllUser() {
+        return userMapper.queryAllUser();
     }
 
 

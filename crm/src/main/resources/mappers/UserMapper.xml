@@ -12,4 +12,8 @@
         update tbl_user set loginPwd = #{newPwd} where id=#{loginId}
     </update>
 
+    <select id="queryAllUser" resultType="user">
+        select * from `tbl_user`
+    </select>
+
 </mapper>

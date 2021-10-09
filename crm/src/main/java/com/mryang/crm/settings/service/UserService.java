@@ -4,6 +4,7 @@ import com.mryang.crm.exception.LoginException;
 import com.mryang.crm.settings.pojo.User;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Genius
@@ -23,4 +24,8 @@ public interface UserService {
     // 修改密码
 //    int updateUserPwd(String oldPwd, String newPwd, String confirmPwd, HttpServletRequest request);
     int updateUserPwd(String loginId, String md5NewPwd);
+
+    // 查询所有用户
+    List<User> queryAllUser();
+
 }

@@ -3,6 +3,8 @@ package com.mryang.crm.settings.mapper;
 import com.mryang.crm.settings.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author Genius
  * @version 1.0.0
@@ -19,5 +21,7 @@ public interface UserMapper {
     int updateUserPwd(@Param("loginId") String loginId,
                       @Param("newPwd") String newPwd);
 
+
+    List<User> queryAllUser();
 
 }
