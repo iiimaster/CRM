@@ -16,6 +16,13 @@ public class HandleFlag {
 
     }*/
 
+    public static Map<String,Object> error(String key,Object obj){
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",false);
+        map.put(key,obj);
+        return map;
+    }
+
     public static Map<String,Object> successTrue(){
 
         Map<String,Object> map = new HashMap<>();
