@@ -28,7 +28,35 @@
             // 	 b.加载市场活动列表信息-分页实现
 
             // 2.全选/全不选
+            $("#all").click(function () {
+                // 获取全选框的状态
+                let ck = $("#all").prop(`checked`)
+                // alert(ck)
+
+                // 单选框
+                let $flag = $(".flag")
+                // alert($flag.length)
+
+                // 将全选框的状态作用于每个单选框
+                for (let i=0;i<$flag.length;i++){
+                    $(".flag")[i].checked = ck
+                }
+            })
             // 3.反选
+            $(".flag").click(function () {
+
+                // 复选框总个数
+                let count = $(".flag").length
+
+                // 选中的复选框的个数
+                let ckTrue = $(".flag:checked").length
+
+                if (ckTrue === count){
+                    $("#all").prop("checked",true)
+                }else{
+                    $("#all").prop("checked",false)
+                }
+            })
 
             // 4.创建市场活动数据
             // 5.设置下拉框默认选项-登录的用户
