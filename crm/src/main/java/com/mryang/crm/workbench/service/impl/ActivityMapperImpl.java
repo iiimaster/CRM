@@ -21,8 +21,14 @@ public class ActivityMapperImpl implements ActivityService {
     @Autowired
     private ActivityMapper activityMapper;
 
+
     @Override
     public List<Activity> getActivityList() {
         return activityMapper.getActivityList();
+    }
+
+    @Override
+    public int saveActivity(String id, String owner, String name, String startDate, String endDate, String cost, String description, String createTime, String createBy) {
+        return activityMapper.saveActivity(id,owner,name,startDate,endDate,cost,description,createTime,createBy);
     }
 }

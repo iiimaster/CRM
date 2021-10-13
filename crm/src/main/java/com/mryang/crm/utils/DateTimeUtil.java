@@ -28,4 +28,14 @@ public class DateTimeUtil {
 		return dateStr;
 
 	}
+	// 将时间格式化为字符串
+	public static String getSysTimeForUpload(String date){
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+
+		String dateStr = sdf.format(date);
+
+		return dateStr;
+
+	}
 }

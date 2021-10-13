@@ -24,4 +24,5 @@ public interface UserMapper {
 
     List<User> queryAllUser();
 
+    User queryUserById(String id);
 }

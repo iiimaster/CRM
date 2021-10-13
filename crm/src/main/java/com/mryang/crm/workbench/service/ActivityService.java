@@ -15,7 +15,9 @@ import java.util.List;
  */
 public interface ActivityService {
 
-
+    // 查询所有数据
     List<Activity> getActivityList();
 
+    // 添加数据
+    int saveActivity(String id, String owner, String name, String startDate, String endDate, String cost, String description, String createTime, String createBy);
 }

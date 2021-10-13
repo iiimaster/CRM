@@ -1,11 +1,14 @@
 package com.mryang.crm.workbench.web.controller;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.settings.pojo.User;
 import com.mryang.crm.settings.service.UserService;
+import com.mryang.crm.utils.DateTimeUtil;
 import com.mryang.crm.utils.HandleFlag;
+import com.mryang.crm.utils.UUIDUtil;
 import com.mryang.crm.workbench.pojo.Activity;
 import com.mryang.crm.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +44,7 @@ public class ActivityController {
 
     /**
      * 跳转到市场活动页面，展示所有市场活动数据
+     *
      * @return
      */
     @RequestMapping("/toindex.do")
@@ -50,12 +55,12 @@ public class ActivityController {
 
         // 市场活动类表数据查询-未分页
         List<Activity> activities = activityService.getActivityList();
-        if (activities == null){
+        if (activities == null) {
             throw new AjaxRequestException("数据列表加载失败");
         }
-        model.addAttribute("activities",activities);
+        model.addAttribute("activities", activities);
         // 将用户数据放入作用域
-        model.addAttribute("users",users);
+        model.addAttribute("users", users);
 
         return "/workbench/activity/index";
     }
@@ -72,9 +77,6 @@ public class ActivityController {
                                   @RequestParam(defaultValue = "8") int pageSize,
                                   Model model) throws AjaxRequestException {
 
-        // 用户信息查询
-        List<User> users = userService.queryAllUser();
-
 
         // 等同于 limit a,b  使用拦截器实现的
         PageHelper.startPage(page, pageSize);
@@ -82,7 +84,7 @@ public class ActivityController {
         // 查询数据
         List<Activity> activities = activityService.getActivityList();
 
-        if (activities == null){
+        if (activities == null && activities.size() <= 0) {
             throw new AjaxRequestException("市场活动数据列表查询失败");
         }
 
@@ -99,8 +101,6 @@ public class ActivityController {
 
 
         // 将数据放入作用域
-        // 用户列表数据
-        model.addAttribute("users", users);
         // 总记录数
         model.addAttribute("count", count);
         // 当前页码
@@ -118,14 +118,108 @@ public class ActivityController {
 
 
     /**
+     * 跳转到添加数据界面
+     * @return
+     * @throws AjaxRequestException
+     */
+    @RequestMapping("/toSaveActivity.do")
+    @ResponseBody
+    public Map<String, Object> toSaveActivity() throws AjaxRequestException {
+        // 用户信息查询
+        List<User> users = userService.queryAllUser();
+
+        if (users == null && users.size() <= 0) {
+            throw new AjaxRequestException("用户信息查询失败");
+        }
+
+        // 返回响应信息
+        return HandleFlag.successObj("data", users);
+    }
+
+    /**
+     * 添加数据操作
+     * @param owner
+     * @param name
+     * @param startDate
+     * @param endDate
+     * @param cost
+     * @param description
+     * @return
+     * @throws AjaxRequestException
+     */
+    @RequestMapping("/saveActivity.do")
+    @ResponseBody
+    public Map<String, Object> saveActivity(String owner,
+                                            String name,
+                                            String startDate,
+                                            String endDate,
+                                            String cost,
+                                            String description) throws AjaxRequestException {
+
+        // 获取创建者姓名
+        User user = userService.queryUserById(owner);
+        /*System.out.println("user:::>>>"+user);
+        System.out.println("owner:::>>>"+owner);
+        System.out.println("name:::>>>"+name);
+        System.out.println("startDate:::>>>"+startDate);
+        System.out.println("endDate:::>>>"+endDate);
+        System.out.println("cost:::>>>"+cost);
+        System.out.println("description:::>>>"+description);*/
+
+        if (user == null){ // 用户信息不存在
+            throw new AjaxRequestException("创建者用户信息错误");
+        }
+
+        // 获取当前时间为创建时间
+        String createTime = DateTimeUtil.getSysTime();
+
+        // 开始时间不能比结束时间晚
+        if (startDate.compareTo(endDate) > 0){ // 开始时间 > 结束时间
+            throw new AjaxRequestException("开始时间不能晚于结束时间");
+        }
+
+        // 获取一个随机uuId
+        String activityId = UUIDUtil.getUUID();
+
+        // 添加市场活动数据
+        int i = activityService.saveActivity(activityId, owner, name, startDate, endDate, cost, description, createTime, user.getName());
+
+        if (i <= 0){
+            throw new AjaxRequestException("市场活动数据添加失败");
+        }
+
+        return HandleFlag.successTrue();
+    }
+
+
+    /**
      * 市场活动细节页面显示-跳转
+     *
      * @return
      */
     @RequestMapping("/toDetail.do")
-    public String toDetail(){
+    public String toDetail() {
         return "/workbench/activity/detail";
     }
 
+    public static void main(String[] args) {
+        String sysTime = DateTimeUtil.getSysTime();
+        System.out.println(sysTime);
+
+        String sysTimeForUpload = DateTimeUtil.getSysTimeForUpload();
+        System.out.println(sysTimeForUpload);
+
+
+
+
+        String date = "2021-6-6 12:23:34";
+
+//
+//        String sysTimeForUpload1 = DateTimeUtil.getSysTimeForUpload(date);
+//        System.out.println(sysTimeForUpload1);
+
+
+    }
 
 
 }

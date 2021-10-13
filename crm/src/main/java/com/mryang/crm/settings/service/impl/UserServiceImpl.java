@@ -97,6 +97,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.queryAllUser();
     }
 
+    @Override
+    public User queryUserById(String id) {
+        return userMapper.queryUserById(id);
+    }
+
 
     public static void main(String[] args) {
         String time = "2020/4/5 14:23:34";

@@ -16,4 +16,8 @@
         select * from `tbl_user`
     </select>
 
+    <select id="queryUserById" resultType="user">
+        select * from `tbl_user` where id=#{id}
+    </select>
+
 </mapper>

@@ -38,7 +38,7 @@
                 // alert($flag.length)
 
                 // 将全选框的状态作用于每个单选框
-                for (let i=0;i<$flag.length;i++){
+                for (let i = 0; i < $flag.length; i++) {
                     $(".flag")[i].checked = ck
                 }
             })
@@ -51,19 +51,118 @@
                 // 选中的复选框的个数
                 let ckTrue = $(".flag:checked").length
 
-                if (ckTrue === count){
-                    $("#all").prop("checked",true)
-                }else{
-                    $("#all").prop("checked",false)
+                if (ckTrue === count) {
+                    $("#all").prop("checked", true)
+                } else {
+                    $("#all").prop("checked", false)
                 }
             })
 
+
+            // 加载时间控件，方便时间的输入
+            $(".time").datetimepicker({
+                minView: "month",
+                language:  'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+
+
             // 4.创建市场活动数据
-            // 5.设置下拉框默认选项-登录的用户
-            // 6.修改市场活动数据
-            // 7.删除市场活动数据
-            // 8.导入、导出市场活动数据
-            // 9.搜索框功能实现
+            $("#openCreateActivityModel").click(function () {
+                $.ajax({
+                    url:"workbench/activity/toSaveActivity.do",
+                    data:{
+
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(result){
+                        if (result.success){ // 查询成功
+                            // 异步加载
+                            let html = ""
+
+                            $.each(result.data,function (i,n) {
+                                // 将标签封装到字符串中
+                                html += "<option value='"+n.id+"'>"+n.name+"</option>"
+                            })
+
+                            // 将html加载到页面中
+                            $("#create-owner").html(html)
+
+                            // 给下拉列表添加默认选项(已登录的用户)
+                            $("#create-owner").val("${user.id}")
+
+                            // 打开创建市场活动的模态窗口
+                            $("#createActivityModal").modal("show")
+
+
+                        }
+                    }
+                })
+            })
+            // 点击保存按钮，保存数据
+            $("#saveActivityBtn").click(function () {
+
+                // 获取要添加的数据
+                let owner = $("#create-owner").val()
+                let name = $("#create-name").val()
+                let startDate = $("#create-startDate").val()
+                let endDate = $("#create-endDate").val()
+                let cost = $("#create-cost").val()
+                let description = $("#create-describe").val()
+
+                if (owner == ""){
+                    alert("请选择所有者！！！")
+                    return false;
+                }
+
+                if (name == ""){
+                    alert("请输入市场活动名称！")
+                    // $("#msg").html("请输入市场活动名称！")
+                    return false;
+                }
+
+                // 发送ajax请求，保存数据
+                $.ajax({
+                    url:"workbench/activity/saveActivity.do",
+                    data:{
+                        "owner":owner,
+                        "name":name,
+                        "startDate":startDate,
+                        "endDate":endDate,
+                        "cost":cost,
+                        "description":description
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        if (data.success){
+                            window.location.href = "workbench/activity/getActivitisByPageHelper.do"
+                        }else{
+                            alert(data.msg)
+                        }
+                    }
+                })
+            })
+            // 点击关闭按钮，关闭模态窗口，并清空模态窗口中的数据
+            $("#closeSaveBtn").click(function () {
+
+                $("#create-name").val("")
+                $("#create-startDate").val("")
+                $("#create-endDate").val("")
+                $("#create-cost").val("")
+                $("#create-describe").val("")
+
+            })
+
+
+            // 5.修改市场活动数据
+            // 6.删除市场活动数据
+            // 7.导入、导出市场活动数据
+            // 8.搜索框功能实现
 
         });
 
@@ -85,31 +184,29 @@
 
                 <form class="form-horizontal" role="form">
 
-                    <div class="form-group">
-                        <label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span
+                    <div class="form-group ">
+                        <label for="create-owner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="create-marketActivityOwner">
-                                <c:forEach items="${users}" var="user">
-                                    <option value="${user.id}">${user.name}</option>
-                                </c:forEach>
+                            <select class="form-control" id="create-owner">
+
                             </select>
                         </div>
-                        <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span
+                        <label for="create-name" class="col-sm-2 control-label">名称<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-marketActivityName">
+                            <input type="text" class="form-control" id="create-name"><span style="color: red" id="msg"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
+                        <label for="create-startDate" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-startTime">
+                            <input type="text" class="form-control time" id="create-startDate">
                         </div>
-                        <label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
+                        <label for="create-endDate" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="create-endTime">
+                            <input type="text" class="form-control time" id="create-endDate">
                         </div>
                     </div>
                     <div class="form-group">
@@ -130,8 +227,9 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+                <!--data-dismiss="modal"-->
+                <button id="closeSaveBtn" type="reset"  class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="saveActivityBtn" type="button" class="btn btn-primary">保存</button>
             </div>
         </div>
     </div>
@@ -156,9 +254,10 @@
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-marketActivityOwner">
-                                <c:forEach items="${users}" var="user">
-                                    <option value="${user.id}">${user.name}</option>
-                                </c:forEach>
+                                <%--   <c:forEach items="${users}" var="user">--%>
+                                <%--       <option value="${user.id}">${user.name}</option>--%>
+                                <%--   </c:forEach>--%>
+
                             </select>
                         </div>
                         <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span
@@ -291,13 +390,15 @@
         <div class="btn-toolbar" role="toolbar"
              style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
             <div class="btn-group" style="position: relative; top: 18%;">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal">
+                <!-- data-toggle="modal" data-target="#createActivityModal" -->
+                <button id="openCreateActivityModel" type="button" class="btn btn-primary">
                     <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span
+                <!-- data-toggle="modal" data-target="#editActivityModal" -->
+                <button id="openUpdateActivityModel" type="button" class="btn btn-default"><span
                         class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+                <button id="delActivity" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
             </div>
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal">
@@ -355,8 +456,8 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="workbench/activity/getActivitisByPageHelper.do?pageSize=20">8</a></li>
-                        <li><a href="workbench/activity/getActivitisByPageHelper.do?pageSize=20">15</a></li>
+                        <li><a href="workbench/activity/getActivitisByPageHelper.do?pageSize=8">8</a></li>
+                        <li><a href="workbench/activity/getActivitisByPageHelper.do?pageSize=15">15</a></li>
                     </ul>
                 </div>
                 <button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
