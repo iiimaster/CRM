@@ -267,6 +267,12 @@ public class ActivityController {
     }
 
 
+    /**
+     * 根据id删除市场活动数据
+     * @param ids
+     * @return
+     * @throws AjaxRequestException
+     */
     @RequestMapping("/deleteActivityByIds.do")
     @ResponseBody
     public Map<String ,Object> deleteActivityByIds(String ids) throws AjaxRequestException {
@@ -286,7 +292,15 @@ public class ActivityController {
      * @return
      */
     @RequestMapping("/toDetail.do")
-    public String toDetail() {
+    public String toDetail(String id,Model model) {
+
+        // 根据id查询市场活动详细信息
+        Activity activity = activityService.queryActivityById(id);
+
+
+        // 放入作用域
+        model.addAttribute("activity",activity);
+
         return "/workbench/activity/detail";
     }
 

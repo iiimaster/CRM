@@ -297,10 +297,6 @@
                         }
                     })
                 })
-
-
-
-
             })
 
 
@@ -593,7 +589,7 @@
                 <c:forEach items="${activities}" var="activity" varStatus="activityIndex">
                     <tr class="${(activityIndex.index+1) % 2 == 0 ? 'active':''}">
                         <td><input type="checkbox" class="flag" value="${activity.id}"/></td>
-                        <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/toDetail.do';">${activity.name}</a></td>
+                        <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/toDetail.do?id=${activity.id}';">${activity.name}</a></td>
                         <td>${activity.owner}</td>
                         <td>${activity.startDate}</td>
                         <td>${activity.endDate}</td>
