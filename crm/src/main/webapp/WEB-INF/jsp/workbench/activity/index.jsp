@@ -160,6 +160,100 @@
 
 
             // 5.修改市场活动数据
+            // 加载页面数据
+            $("#openUpdateActivityModel").click(function () {
+
+                // 获取要编辑的数据条数
+                let $flag = $(".flag:checked")
+
+                if ($flag.length <= 0){
+                    alert("请选择要修改的数据！")
+                    return false
+                }
+
+                if ($flag.length > 1){
+                    alert("只能选择一个数据进行修改！")
+                    return false
+                }
+
+                // 获取要编辑数据的编号
+                let activityId = $flag.val()
+                // console.log(activityId);
+
+                $.ajax({
+                    url:"workbench/activity/toUpdate.do",
+                    data:{
+                        "id":activityId
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(result){
+                        if(result.success){
+                            // 定义一个零时变量
+                            let html = ""
+
+                            $.each(result.users,function (i,n) {
+                                // 将标签封装到字符串中
+                                html += "<option value='"+n.id+"'>"+n.name+"</option>"
+                            })
+                            // 将此html放入页面
+                            $("#edit-owner").html(html)
+
+                            // 设置下拉框默认选项
+                            $("#edit-owner").val("${user.id}")
+                            // 将原始数据放入模态窗口
+                            $("#edit-id").val(result.activity.id)
+                            $("#edit-name").val(result.activity.name)
+                            $("#edit-startDate").val(result.activity.startDate)
+                            $("#edit-endDate").val(result.activity.endDate)
+                            $("#edit-cost").val(result.activity.cost)
+                            $("#edit-describe").val(result.activity.description)
+
+                            // 打开修改页面模态窗口
+                            $("#editActivityModal").modal("show")
+
+                        }
+                    }
+                })
+            })
+            // 修改操作
+            $("#updateActivityBtn").click(function () {
+                // 获取操作者编号
+                let editBy = "${user.id}"
+                // 获取修改后的数据信息
+                let id = $("#edit-id").val()
+                let owner = $("#edit-owner").val()
+                let name = $("#edit-name").val()
+                let startDate = $("#edit-startDate").val()
+                let endDate = $("#edit-endDate").val()
+                let cost = $("#edit-cost").val()
+                let description = $("#edit-description").val()
+
+                $.ajax({
+                    url:"workbench/activity/updateActivity.do",
+                    data:{
+                        "editBy":editBy,
+                        "id":id,
+                        "owner":owner,
+                        "name":name,
+                        "startDate":startDate,
+                        "endDate":endDate,
+                        "cost":cost,
+                        "description":description
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        if(data.success){
+                            window.location.href = "workbench/activity/getActivitisByPageHelper.do"
+                        }else{
+                            alert(data.msg);
+                        }
+                    }
+                })
+
+            })
+
             // 6.删除市场活动数据
             // 7.导入、导出市场活动数据
             // 8.搜索框功能实现
@@ -248,47 +342,49 @@
             <div class="modal-body">
 
                 <form class="form-horizontal" role="form">
+                    <%-- 修改数据的编号-隐藏域--%>
+                    <div hidden><input id="edit-id"></div>
 
                     <div class="form-group">
-                        <label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span
+                        <label for="edit-owner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-marketActivityOwner">
+                            <select class="form-control" id="edit-owner">
                                 <%--   <c:forEach items="${users}" var="user">--%>
                                 <%--       <option value="${user.id}">${user.name}</option>--%>
                                 <%--   </c:forEach>--%>
 
                             </select>
                         </div>
-                        <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span
+                        <label for="edit-name" class="col-sm-2 control-label">名称<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                            <input type="text" class="form-control" id="edit-name" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
+                        <label for="edit-startDate" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+                            <input type="text" class="form-control" id="edit-startDate" value="">
                         </div>
-                        <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+                        <label for="edit-endDate" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+                            <input type="text" class="form-control" id="edit-endDate" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-cost" class="col-sm-2 control-label">成本</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-cost" value="5,000">
+                            <input type="text" class="form-control" id="edit-cost" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">描述</label>
+                        <label for="edit-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+                            <textarea class="form-control" rows="3" id="edit-description"></textarea>
                         </div>
                     </div>
 
@@ -297,7 +393,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button type="button" class="btn btn-primary" id="updateActivityBtn">更新</button>
             </div>
         </div>
     </div>
@@ -341,6 +437,7 @@
     </div>
 </div>
 
+<div>${activity.name}</div>
 
 <div>
     <div style="position: relative; left: 10px; top: -10px;">
@@ -426,7 +523,7 @@
                 <tbody>
                 <c:forEach items="${activities}" var="activity" varStatus="activityIndex">
                     <tr class="${(activityIndex.index+1) % 2 == 0 ? 'active':''}">
-                        <td><input type="checkbox" class="flag"/></td>
+                        <td><input type="checkbox" class="flag" value="${activity.id}"/></td>
                         <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/toDetail.do';">${activity.name}</a></td>
                         <td>${activity.owner}</td>
                         <td>${activity.startDate}</td>

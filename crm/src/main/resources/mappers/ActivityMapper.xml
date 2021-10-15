@@ -36,4 +36,22 @@
             `tbl_user` u
         where a.`owner`=u.id
     </select>
+
+    <select id="queryActivityById" resultType="activity">
+        select * from `tbl_activity` where id=#{id}
+    </select>
+
+    <update id="updateActivity">
+        update `tbl_activity`
+        set
+            owner = #{owner},
+            name = #{name},
+            startDate = #{startDate},
+            endDate = #{endDate},
+            cost = #{cost},
+            description = #{description},
+            editBy = #{editBy},
+            editTime = #{editTime}
+        where id = #{id}
+    </update>
 </mapper>

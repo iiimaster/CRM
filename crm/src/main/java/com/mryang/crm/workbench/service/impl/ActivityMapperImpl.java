@@ -31,4 +31,14 @@ public class ActivityMapperImpl implements ActivityService {
     public int saveActivity(String id, String owner, String name, String startDate, String endDate, String cost, String description, String createTime, String createBy) {
         return activityMapper.saveActivity(id,owner,name,startDate,endDate,cost,description,createTime,createBy);
     }
+
+    @Override
+    public Activity queryActivityById(String id) {
+        return activityMapper.queryActivityById(id);
+    }
+
+    @Override
+    public int updateActivity(String id,String owner, String name, String startDate, String endDate, String cost, String description, String editBy, String editTime) {
+        return activityMapper.updateActivity(id,owner,name,startDate,endDate,cost,description,editBy,editTime);
+    }
 }

@@ -1,8 +1,6 @@
 package com.mryang.crm.workbench.service;
 
 import com.mryang.crm.workbench.pojo.Activity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -20,4 +18,11 @@ public interface ActivityService {
 
     // 添加数据
     int saveActivity(String id, String owner, String name, String startDate, String endDate, String cost, String description, String createTime, String createBy);
+
+    // 根据id查询数据
+    Activity queryActivityById(String id);
+
+    // 修改数据
+    int updateActivity(String id,String owner, String name, String startDate, String endDate, String cost, String description, String editBy, String editTime);
+
 }

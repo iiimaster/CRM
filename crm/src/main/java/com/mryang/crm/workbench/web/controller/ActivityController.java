@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -193,6 +194,67 @@ public class ActivityController {
 
 
     /**
+     * 修改指定市场活动
+     * @return
+     */
+    @RequestMapping("/toUpdate.do")
+    @ResponseBody
+    public Map<String,Object> toUpdate(String id,Model model) throws AjaxRequestException {
+
+        List<User> users = userService.queryAllUser();
+
+        if(users == null && users.size() <=0){
+            throw new AjaxRequestException("无法获取用户信息");
+        }
+
+        Activity activity = activityService.queryActivityById(id);
+
+        if (activity == null ){
+            throw new AjaxRequestException("要修改的市场活动信息不存在");
+        }
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        resultMap.put("success",true);
+        resultMap.put("users",users);
+        resultMap.put("activity",activity);
+
+        return resultMap;
+    }
+
+
+    @RequestMapping("/updateActivity.do")
+    @ResponseBody
+    public Map<String,Object> updateActivity(String editBy,
+                                             String id,
+                                             String owner,
+                                             String name,
+                                             String startDate,
+                                             String endDate,
+                                             String cost,
+                                             String description) throws AjaxRequestException {
+
+        // 获取当前时间，作为修改时间
+        String editTime = DateTimeUtil.getSysTime();
+        // 获取操作者名称
+        User user = userService.queryUserById(editBy);
+        if (user == null ){
+            throw new AjaxRequestException("修改操作失败！-操作者信息有误");
+        }
+        editBy = user.getName();
+
+        // 修改操作
+        int i = activityService.updateActivity(id, owner, name, startDate, endDate, cost, description, editBy, editTime);
+
+        if (i<=0){
+            throw new AjaxRequestException("修改数据失败！");
+        }
+
+        return HandleFlag.successTrue();
+    }
+
+
+    /**
      * 市场活动细节页面显示-跳转
      *
      * @return
@@ -201,6 +263,9 @@ public class ActivityController {
     public String toDetail() {
         return "/workbench/activity/detail";
     }
+
+
+    
 
     public static void main(String[] args) {
         String sysTime = DateTimeUtil.getSysTime();

@@ -43,4 +43,20 @@ public interface ActivityMapper {
                      @Param("createTime") String createTime,
                      @Param("createBy") String createBy);
 
+    /**
+     * 根据id查询市场活动信息
+     * @param id
+     * @return
+     */
+    Activity queryActivityById(String id);
+
+    int updateActivity(@Param("id")String id,
+                       @Param("owner")String owner,
+                       @Param("name")String name,
+                       @Param("startDate")String startDate,
+                       @Param("endDate")String endDate,
+                       @Param("cost")String cost,
+                       @Param("description")String description,
+                       @Param("editBy")String editBy,
+                       @Param("editTime")String editTime);
 }
