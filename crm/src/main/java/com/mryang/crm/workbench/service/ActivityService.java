@@ -1,5 +1,6 @@
 package com.mryang.crm.workbench.service;
 
+import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.workbench.pojo.Activity;
 
 import java.util.List;
@@ -25,4 +26,5 @@ public interface ActivityService {
     // 修改数据
     int updateActivity(String id,String owner, String name, String startDate, String endDate, String cost, String description, String editBy, String editTime);
 
+    void deleteActivityByIds(String ids) throws AjaxRequestException;
 }

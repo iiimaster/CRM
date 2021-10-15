@@ -194,7 +194,7 @@ public class ActivityController {
 
 
     /**
-     * 修改指定市场活动
+     * 修改页面跳转，数据加载
      * @return
      */
     @RequestMapping("/toUpdate.do")
@@ -223,6 +223,19 @@ public class ActivityController {
     }
 
 
+    /**
+     * 修改市场活动
+     * @param editBy
+     * @param id
+     * @param owner
+     * @param name
+     * @param startDate
+     * @param endDate
+     * @param cost
+     * @param description
+     * @return
+     * @throws AjaxRequestException
+     */
     @RequestMapping("/updateActivity.do")
     @ResponseBody
     public Map<String,Object> updateActivity(String editBy,
@@ -252,6 +265,19 @@ public class ActivityController {
 
         return HandleFlag.successTrue();
     }
+
+
+    @RequestMapping("/deleteActivityByIds.do")
+    @ResponseBody
+    public Map<String ,Object> deleteActivityByIds(String ids) throws AjaxRequestException {
+
+        // 删除数据
+        activityService.deleteActivityByIds(ids);
+
+//        return HandleFlag.error("msg","error");
+        return HandleFlag.successTrue();
+    }
+
 
 
     /**

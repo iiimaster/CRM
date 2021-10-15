@@ -255,6 +255,55 @@
             })
 
             // 6.删除市场活动数据
+            $("#toDelActivity").click(function () {
+                // 获取要删除的数据编号
+                let ids = ""
+                // 遍历选中的数据，拿到其id，并放入ids中
+                let $flagCk = $(".flag:checked")
+                for (let i=0;i<$flagCk.length;i++){
+
+                    if (i === $flagCk.length-1){
+                        ids += $flagCk.eq(i).val()
+                    }else{
+                        ids += $flagCk.eq(i).val() +"-"
+                    }
+                }
+                // alert($flagCk.length)
+
+                // 删除警告框
+                if ($flagCk.length == 0){
+                    $("#delActivityMsg").html("请选择要删除的的数据")
+                }else {
+                    $("#delActivityMsg").html("你确定要删除这些数据吗？")
+                }
+                // 显示删除的模态窗口
+                $("#delModal").modal("show")
+
+                // 发送请求，进行删除操作
+                $("#delActivity").click(function () {
+                    $.ajax({
+                        url:"workbench/activity/deleteActivityByIds.do",
+                        data:{
+                            "ids":ids
+                        },
+                        type:"post",
+                        dataType:"json",
+                        success:function(data){
+                            if (data.success){
+                                window.location.href="workbench/activity/getActivitisByPageHelper.do?page="+${pageNow}
+                            }else{
+                                alert(data.msg)
+                            }
+                        }
+                    })
+                })
+
+
+
+
+            })
+
+
             // 7.导入、导出市场活动数据
             // 8.搜索框功能实现
 
@@ -437,7 +486,26 @@
     </div>
 </div>
 
-<div>${activity.name}</div>
+
+<!-- 删除警告弹窗 -->
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="warningDialogBox">删除市场活动</h4>
+            </div>
+            <div class="modal-body" id="delActivityMsg">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="delActivity">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div>
     <div style="position: relative; left: 10px; top: -10px;">
@@ -492,10 +560,11 @@
                     <span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
                 <!-- data-toggle="modal" data-target="#editActivityModal" -->
-                <button id="openUpdateActivityModel" type="button" class="btn btn-default"><span
-                        class="glyphicon glyphicon-pencil"></span> 修改
+                <button id="openUpdateActivityModel" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
-                <button id="delActivity" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+                <button id="toDelActivity" type="button" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-minus"></span> 删除</button>
             </div>
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal">

@@ -59,4 +59,6 @@ public interface ActivityMapper {
                        @Param("description")String description,
                        @Param("editBy")String editBy,
                        @Param("editTime")String editTime);
+
+    int deleteByIds(String id);
 }
