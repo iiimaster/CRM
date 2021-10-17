@@ -50,6 +50,7 @@ public interface ActivityMapper {
      */
     Activity queryActivityById(String id);
 
+    // 修改数据信息
     int updateActivity(@Param("id")String id,
                        @Param("owner")String owner,
                        @Param("name")String name,
@@ -60,5 +61,12 @@ public interface ActivityMapper {
                        @Param("editBy")String editBy,
                        @Param("editTime")String editTime);
 
+    // 通过id删除信息
     int deleteByIds(String id);
+
+    // 通过Id查询数据
+    List<Activity> queryActivityByIds(String[] activityIds);
+
+    // 批量导入数据
+    int saveImportActivity(List<Activity> activityList);
 }

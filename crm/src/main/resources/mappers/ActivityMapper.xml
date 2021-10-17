@@ -3,7 +3,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mryang.crm.workbench.mapper.ActivityMapper">
     <insert id="saveActivity">
-        insert into `tbl_activity`(id, owner, name, startDate, endDate, cost, description, createTime, createBy)
+        insert into `tbl_activity`
+        (
+            id,
+            owner,
+            name,
+            startDate,
+            endDate,
+            cost,
+            description,
+            createTime,
+            createBy
+        )
         values(
             #{id},
             #{owner},
@@ -16,6 +27,36 @@
             #{createBy}
             )
     </insert>
+
+    <insert id="saveImportActivity">
+        insert into `tbl_activity`
+        (
+            id,
+            owner,
+            name,
+            startDate,
+            endDate,
+            cost,
+            description,
+            createTime,
+            createBy
+        )
+        values
+        <foreach collection="list" item="a" separator=",">
+        (
+            #{a.id},
+            #{a.owner},
+            #{a.name},
+            #{a.startDate},
+            #{a.endDate},
+            #{a.cost},
+            #{a.description},
+            #{a.createTime},
+            #{a.createBy}
+        )
+        </foreach>
+    </insert>
+
 
 
     <select id="getActivityList" resultType="activity">
@@ -41,6 +82,14 @@
         select * from `tbl_activity` where id=#{id}
     </select>
 
+    <select id="queryActivityByIds" resultType="activity">
+        select * from `tbl_activity` 
+        where id in 
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
     <update id="updateActivity">
         update `tbl_activity`
         set
@@ -58,4 +107,6 @@
     <delete id="deleteByIds">
         delete from `tbl_activity` where id=#{id}
     </delete>
+    
+    
 </mapper>

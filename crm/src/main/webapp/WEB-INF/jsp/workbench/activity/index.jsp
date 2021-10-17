@@ -62,7 +62,7 @@
             // 加载时间控件，方便时间的输入
             $(".time").datetimepicker({
                 minView: "month",
-                language:  'zh-CN',
+                language: 'zh-CN',
                 format: 'yyyy-mm-dd',
                 autoclose: true,
                 todayBtn: true,
@@ -73,20 +73,18 @@
             // 4.创建市场活动数据
             $("#openCreateActivityModel").click(function () {
                 $.ajax({
-                    url:"workbench/activity/toSaveActivity.do",
-                    data:{
-
-                    },
-                    type:"post",
-                    dataType:"json",
-                    success:function(result){
-                        if (result.success){ // 查询成功
+                    url: "workbench/activity/toSaveActivity.do",
+                    data: {},
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success) { // 查询成功
                             // 异步加载
                             let html = ""
 
-                            $.each(result.data,function (i,n) {
+                            $.each(result.data, function (i, n) {
                                 // 将标签封装到字符串中
-                                html += "<option value='"+n.id+"'>"+n.name+"</option>"
+                                html += "<option value='" + n.id + "'>" + n.name + "</option>"
                             })
 
                             // 将html加载到页面中
@@ -114,12 +112,12 @@
                 let cost = $("#create-cost").val()
                 let description = $("#create-describe").val()
 
-                if (owner == ""){
+                if (owner == "") {
                     alert("请选择所有者！！！")
                     return false;
                 }
 
-                if (name == ""){
+                if (name == "") {
                     alert("请输入市场活动名称！")
                     // $("#msg").html("请输入市场活动名称！")
                     return false;
@@ -127,21 +125,21 @@
 
                 // 发送ajax请求，保存数据
                 $.ajax({
-                    url:"workbench/activity/saveActivity.do",
-                    data:{
-                        "owner":owner,
-                        "name":name,
-                        "startDate":startDate,
-                        "endDate":endDate,
-                        "cost":cost,
-                        "description":description
+                    url: "workbench/activity/saveActivity.do",
+                    data: {
+                        "owner": owner,
+                        "name": name,
+                        "startDate": startDate,
+                        "endDate": endDate,
+                        "cost": cost,
+                        "description": description
                     },
-                    type:"post",
-                    dataType:"json",
-                    success:function(data){
-                        if (data.success){
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
                             window.location.href = "workbench/activity/getActivitisByPageHelper.do"
-                        }else{
+                        } else {
                             alert(data.msg)
                         }
                     }
@@ -166,12 +164,12 @@
                 // 获取要编辑的数据条数
                 let $flag = $(".flag:checked")
 
-                if ($flag.length <= 0){
+                if ($flag.length <= 0) {
                     alert("请选择要修改的数据！")
                     return false
                 }
 
-                if ($flag.length > 1){
+                if ($flag.length > 1) {
                     alert("只能选择一个数据进行修改！")
                     return false
                 }
@@ -181,20 +179,20 @@
                 // console.log(activityId);
 
                 $.ajax({
-                    url:"workbench/activity/toUpdate.do",
-                    data:{
-                        "id":activityId
+                    url: "workbench/activity/toUpdate.do",
+                    data: {
+                        "id": activityId
                     },
-                    type:"post",
-                    dataType:"json",
-                    success:function(result){
-                        if(result.success){
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success) {
                             // 定义一个零时变量
                             let html = ""
 
-                            $.each(result.users,function (i,n) {
+                            $.each(result.users, function (i, n) {
                                 // 将标签封装到字符串中
-                                html += "<option value='"+n.id+"'>"+n.name+"</option>"
+                                html += "<option value='" + n.id + "'>" + n.name + "</option>"
                             })
                             // 将此html放入页面
                             $("#edit-owner").html(html)
@@ -230,23 +228,23 @@
                 let description = $("#edit-description").val()
 
                 $.ajax({
-                    url:"workbench/activity/updateActivity.do",
-                    data:{
-                        "editBy":editBy,
-                        "id":id,
-                        "owner":owner,
-                        "name":name,
-                        "startDate":startDate,
-                        "endDate":endDate,
-                        "cost":cost,
-                        "description":description
+                    url: "workbench/activity/updateActivity.do",
+                    data: {
+                        "editBy": editBy,
+                        "id": id,
+                        "owner": owner,
+                        "name": name,
+                        "startDate": startDate,
+                        "endDate": endDate,
+                        "cost": cost,
+                        "description": description
                     },
-                    type:"post",
-                    dataType:"json",
-                    success:function(data){
-                        if(data.success){
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
                             window.location.href = "workbench/activity/getActivitisByPageHelper.do"
-                        }else{
+                        } else {
                             alert(data.msg);
                         }
                     }
@@ -260,20 +258,20 @@
                 let ids = ""
                 // 遍历选中的数据，拿到其id，并放入ids中
                 let $flagCk = $(".flag:checked")
-                for (let i=0;i<$flagCk.length;i++){
+                for (let i = 0; i < $flagCk.length; i++) {
 
-                    if (i === $flagCk.length-1){
+                    if (i === $flagCk.length - 1) {
                         ids += $flagCk.eq(i).val()
-                    }else{
-                        ids += $flagCk.eq(i).val() +"-"
+                    } else {
+                        ids += $flagCk.eq(i).val() + "-"
                     }
                 }
                 // alert($flagCk.length)
 
                 // 删除警告框
-                if ($flagCk.length == 0){
+                if ($flagCk.length == 0) {
                     $("#delActivityMsg").html("请选择要删除的的数据")
-                }else {
+                } else {
                     $("#delActivityMsg").html("你确定要删除这些数据吗？")
                 }
                 // 显示删除的模态窗口
@@ -282,16 +280,17 @@
                 // 发送请求，进行删除操作
                 $("#delActivity").click(function () {
                     $.ajax({
-                        url:"workbench/activity/deleteActivityByIds.do",
-                        data:{
-                            "ids":ids
+                        url: "workbench/activity/deleteActivityByIds.do",
+                        data: {
+                            "ids": ids
                         },
-                        type:"post",
-                        dataType:"json",
-                        success:function(data){
-                            if (data.success){
-                                window.location.href="workbench/activity/getActivitisByPageHelper.do?page="+${pageNow}
-                            }else{
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.success) {
+                                window.location.href = "workbench/activity/getActivitisByPageHelper.do?page=" +
+                                ${pageNow}
+                            } else {
                                 alert(data.msg)
                             }
                         }
@@ -301,6 +300,99 @@
 
 
             // 7.导入、导出市场活动数据
+            // 导出全部数据
+            $("#exportActivityAllBtn").click(function () {
+                // 提示信息
+                if (confirm("您确定要导出全部数据吗？")){
+                    // 点击确认，要做的事
+                    window.location.href = "workbench/activity/exportActivityAll.do"
+                }
+            })
+            // 部分导出
+            $("#exportActivityXzBtn").click(function () {
+                // 获取要导出的数据id
+                let ids = ""
+                let $flag = $(".flag:checked")
+
+                if ($flag.length == 0){
+                    alert("请选择要导出的数据。")
+                    return false;
+                }
+
+                for (let i=0;i<$flag.length;i++){
+                    if (i == $flag.length-1){
+                        ids += $flag.eq(i).val()
+                    }else{
+                        ids += $flag.eq(i).val() + "-"
+                    }
+                }
+                // alert(ids)
+
+                // 提示信息
+                if (confirm("您确定要导出这些数据吗？")){
+                    // 点击确定后做的事
+                    window.location.href = "workbench/activity/exportActivityXz.do?ids="+ids
+
+                }
+            })
+            // 导入数据
+            $("#importActivityBtn").click(function () {
+                // 对文件进行校验
+                // 文件类型只能是excel文件，后缀为.xls或.xlsx
+                // 获取上传文件名
+                let fileName = $("#activityFile").val()
+                // alert(fileName)
+
+                // 获取后缀名，从.的下一个位置开始截取字符串
+                let index = fileName.lastIndexOf(".")+1
+                let name = fileName.substr(index)
+
+                // alert(name)
+                if (name == "xls" || name == "xlsx"){ // 上传的文件是Excel文件
+                    // 上传文件大小不能超过5M(1024*1024*5)
+                    // 上传的文件信息
+                    let file = $("#activityFile")[0].files[0]
+                    // console.log(file.size); // 上传文件大小
+
+                    if (file.size > 1024*1024*5){
+                        alert("上传文件大小超过5M,无法进行上传")
+                        return false
+                    }
+
+                    // 文件上传，发送上传的ajax请求
+                    // 定义表单数据对象(键值对),向服务器提交数据
+                    let formData = new FormData()
+                    // 向 FormData 中添加新的属性值
+                    formData.append("activityFile",file)
+                    $.ajax({
+                        url:"workbench/activity/importActivity.do",
+                        data:formData,
+                        // 文件上传必须是post请求
+                        type:"post",
+                        // 由于普通的ajax请求，我们需要对上传的参数进行编码设置(urlencoded)，即 processData:true(默认)
+                        // 但文件上传不需要进行编码设置
+                        processData:false,
+                        contentType:false,
+                        success: function (data) {
+                            // data{ success:true/false, msg:xxx, data:上传成功的文件条数 }
+                            if (data.success){
+                                alert(data.data + "条数据上传成功！")
+                                window.location.href = "workbench/activity/getActivitisByPageHelper.do"
+                            }else{
+                                alert(data.msg)
+                            }
+                        }
+
+                    })
+
+
+
+                }
+
+
+            })
+
+
             // 8.搜索框功能实现
 
         });

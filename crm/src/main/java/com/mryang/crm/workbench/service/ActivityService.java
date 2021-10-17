@@ -26,5 +26,11 @@ public interface ActivityService {
     // 修改数据
     int updateActivity(String id,String owner, String name, String startDate, String endDate, String cost, String description, String editBy, String editTime);
 
+    // 根据id删除数据
     void deleteActivityByIds(String ids) throws AjaxRequestException;
+
+    // 部分导出数据
+    List<Activity> getActivityListByIds(String ids) throws AjaxRequestException;
+
+    int saveImportActivity(List<Activity> activityList) throws AjaxRequestException;
 }

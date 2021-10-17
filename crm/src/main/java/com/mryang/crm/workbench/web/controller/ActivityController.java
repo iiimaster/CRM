@@ -1,6 +1,5 @@
 package com.mryang.crm.workbench.web.controller;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mryang.crm.exception.AjaxRequestException;
@@ -11,16 +10,24 @@ import com.mryang.crm.utils.HandleFlag;
 import com.mryang.crm.utils.UUIDUtil;
 import com.mryang.crm.workbench.pojo.Activity;
 import com.mryang.crm.workbench.service.ActivityService;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +124,7 @@ public class ActivityController {
         return "/workbench/activity/index";
     }
 
-
+    // 添加
     /**
      * 跳转到添加数据界面
      * @return
@@ -192,7 +199,7 @@ public class ActivityController {
         return HandleFlag.successTrue();
     }
 
-
+    // 修改
     /**
      * 修改页面跳转，数据加载
      * @return
@@ -266,7 +273,7 @@ public class ActivityController {
         return HandleFlag.successTrue();
     }
 
-
+    // 删除
     /**
      * 根据id删除市场活动数据
      * @param ids
@@ -285,7 +292,386 @@ public class ActivityController {
     }
 
 
+    // 数据 导入、导出
 
+    /**
+     * 全部数据导出
+     * @param response
+     * @throws AjaxRequestException
+     * @throws IOException
+     */
+    @RequestMapping("/exportActivityAll.do")
+    public void exportActivityAll(HttpServletResponse response) throws AjaxRequestException, IOException {
+        // 获取所有市场活动数据
+        List<Activity> activityList = activityService.getActivityList();
+
+        if (activityList == null || activityList.size() <= 0){
+            throw new AjaxRequestException("市场活动数据查询失败");
+        }
+
+
+        // 创建一个文件
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        // 创建一页
+        HSSFSheet sheet = workbook.createSheet();
+
+        // 表头
+            // id
+            // name
+            // owner
+            // startDate
+            // endDate
+            // cost
+            // description
+            // createBy
+            // createTime
+            // editBy
+            // editTime
+        // 创建一行
+        // rownum为索引 从0开始
+        HSSFRow row = sheet.createRow(0);
+
+        // 每一个单元格中的值,column 索引从0开始
+        HSSFCell cell1 = row.createCell(0);
+        cell1.setCellValue("唯一索引");
+
+        HSSFCell cell2 = row.createCell(1);
+        cell2.setCellValue("市场活动名称");
+
+        HSSFCell cell3 = row.createCell(2);
+        cell3.setCellValue("所有者标识");
+
+        HSSFCell cell4 = row.createCell(3);
+        cell4.setCellValue("开始时间");
+
+        HSSFCell cell5 = row.createCell(4);
+        cell5.setCellValue("结束时间");
+
+        HSSFCell cell6 = row.createCell(5);
+        cell6.setCellValue("成本");
+
+        HSSFCell cell7 = row.createCell(6);
+        cell7.setCellValue("描述");
+
+        HSSFCell cell8 = row.createCell(7);
+        cell8.setCellValue("创建人");
+
+        HSSFCell cell9 = row.createCell(8);
+        cell9.setCellValue("创建时间");
+
+        HSSFCell cell10 = row.createCell(9);
+        cell10.setCellValue("修改人");
+
+        HSSFCell cell11 = row.createCell(10);
+        cell11.setCellValue("修改时间");
+
+
+        for (int i = 0; i < activityList.size(); i++) {
+            // 创建一行
+            // rownum为索引 从0开始
+            row = sheet.createRow(i+1);
+
+            Activity activity = activityList.get(i);
+
+            HSSFCell c1 = row.createCell(0);
+            c1.setCellValue(activity.getId());
+
+            HSSFCell c2 = row.createCell(1);
+            c2.setCellValue(activity.getName());
+
+            HSSFCell c3 = row.createCell(2);
+            c3.setCellValue(activity.getOwner());
+
+            HSSFCell c4 = row.createCell(3);
+            c4.setCellValue(activity.getStartDate());
+
+            HSSFCell c5 = row.createCell(4);
+            c5.setCellValue(activity.getEndDate());
+
+            HSSFCell c6 = row.createCell(5);
+            c6.setCellValue(activity.getCost());
+
+            HSSFCell c7 = row.createCell(6);
+            c7.setCellValue(activity.getDescription());
+
+            HSSFCell c8 = row.createCell(7);
+            c8.setCellValue(activity.getCreateBy());
+
+            HSSFCell c9 = row.createCell(8);
+            c9.setCellValue(activity.getCreateTime());
+
+            HSSFCell c10 = row.createCell(9);
+            c10.setCellValue(activity.getEditBy());
+
+            HSSFCell c11 = row.createCell(10);
+            c11.setCellValue(activity.getEditTime());
+
+        }
+
+        //为客户浏览器提供下载框
+        response.setContentType("octets/stream");
+        response.setHeader("Content-Disposition","attachment;filename=Activity-"+DateTimeUtil.getSysTime()+".xls");
+
+        OutputStream out = response.getOutputStream();
+
+        workbook.write(out);
+
+
+    }
+
+
+    /**
+     * 部分数据导出
+     * @param ids
+     * @param response
+     * @return
+     * @throws AjaxRequestException
+     */
+    @RequestMapping("/exportActivityXz.do")
+    public void exportActivityXz(String ids,
+                                 HttpServletResponse response) throws AjaxRequestException, IOException {
+
+        List<Activity> activityListByIds = activityService.getActivityListByIds(ids);
+
+
+        // 创建一个文件
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        // 创建一页
+        HSSFSheet sheet = workbook.createSheet();
+
+        // 表头
+        // id
+        // name
+        // owner
+        // startDate
+        // endDate
+        // cost
+        // description
+        // createBy
+        // createTime
+        // editBy
+        // editTime
+        // 创建一行
+        // rownum为索引 从0开始
+        HSSFRow row = sheet.createRow(0);
+
+        // 每一个单元格中的值,column 索引从0开始
+        HSSFCell cell1 = row.createCell(0);
+        cell1.setCellValue("唯一索引");
+
+        HSSFCell cell2 = row.createCell(1);
+        cell2.setCellValue("市场活动名称");
+
+        HSSFCell cell3 = row.createCell(2);
+        cell3.setCellValue("所有者标识");
+
+        HSSFCell cell4 = row.createCell(3);
+        cell4.setCellValue("开始时间");
+
+        HSSFCell cell5 = row.createCell(4);
+        cell5.setCellValue("结束时间");
+
+        HSSFCell cell6 = row.createCell(5);
+        cell6.setCellValue("成本");
+
+        HSSFCell cell7 = row.createCell(6);
+        cell7.setCellValue("描述");
+
+        HSSFCell cell8 = row.createCell(7);
+        cell8.setCellValue("创建人");
+
+        HSSFCell cell9 = row.createCell(8);
+        cell9.setCellValue("创建时间");
+
+        HSSFCell cell10 = row.createCell(9);
+        cell10.setCellValue("修改人");
+
+        HSSFCell cell11 = row.createCell(10);
+        cell11.setCellValue("修改时间");
+
+
+        for (int i = 0; i < activityListByIds.size(); i++) {
+            // 创建一行
+            // rownum为索引 从0开始
+            row = sheet.createRow(i+1);
+
+            Activity activity = activityListByIds.get(i);
+
+            HSSFCell c1 = row.createCell(0);
+            c1.setCellValue(activity.getId());
+
+            HSSFCell c2 = row.createCell(1);
+            c2.setCellValue(activity.getName());
+
+            HSSFCell c3 = row.createCell(2);
+            c3.setCellValue(activity.getOwner());
+
+            HSSFCell c4 = row.createCell(3);
+            c4.setCellValue(activity.getStartDate());
+
+            HSSFCell c5 = row.createCell(4);
+            c5.setCellValue(activity.getEndDate());
+
+            HSSFCell c6 = row.createCell(5);
+            c6.setCellValue(activity.getCost());
+
+            HSSFCell c7 = row.createCell(6);
+            c7.setCellValue(activity.getDescription());
+
+            HSSFCell c8 = row.createCell(7);
+            c8.setCellValue(activity.getCreateBy());
+
+            HSSFCell c9 = row.createCell(8);
+            c9.setCellValue(activity.getCreateTime());
+
+            HSSFCell c10 = row.createCell(9);
+            c10.setCellValue(activity.getEditBy());
+
+            HSSFCell c11 = row.createCell(10);
+            c11.setCellValue(activity.getEditTime());
+
+        }
+
+        //为客户浏览器提供下载框
+        response.setContentType("octets/stream");
+        response.setHeader("Content-Disposition","attachment;filename=Activity-"+DateTimeUtil.getSysTime()+".xls");
+
+        OutputStream out = response.getOutputStream();
+
+        workbook.write(out);
+
+    }
+
+
+    /**
+     * 批量文件导入(Excel)
+     *
+     * @param activityFile 文件信息
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/importActivity.do")
+    @ResponseBody
+    public Map<String, Object> importActivity(MultipartFile activityFile,
+                                              HttpSession session) throws IOException, AjaxRequestException {
+        // 此处的参数 activityFile 必须与放入 FormData 中的属性值对应
+        // 获取session中的数据信息（登录的用户信息）
+        User user = (User) session.getAttribute("user");
+        String owner = user.getId();
+        String createBy = user.getName();
+
+//        System.out.println("owner :::>>>> " + owner);
+//        System.out.println("name :::>>>> " + createBy);
+
+        // 获取创建时间
+        String createTime = DateTimeUtil.getSysTime();
+
+
+        // 获取原文件名称
+        String originalFilename = activityFile.getOriginalFilename();
+
+        // 获取扩展名
+        String ext = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        // 设置新的文件名称
+        String newFileName = DateTimeUtil.getSysTimeForUpload() + "." + ext;
+
+        // 设置文件上传路径（真实路径）
+        String path = "F:/yx2009/projectCRM/crm/src/main/webapp/temDir";
+        // 获取target目录中的temDir
+//        String path = request.getServletContext().getRealPath("/tmpDir");
+
+        // 将文件上传到服务器中
+        activityFile.transferTo(new File(path + "/" + newFileName));
+
+        // TODO 将文件的类容批量导入到数据库中
+        // 批量导入功能
+        // 将刚刚上传的文件转换成输入流
+        InputStream inputStream = new FileInputStream(new File(path + "/" + newFileName));
+
+        // Excel工作簿对象需要一个输入流，会将输入流转换成工作簿对象
+        // 也就是将实体的Excel文件读取到内存中
+        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+
+        // 读取第一页的内容
+        HSSFSheet sheet = workbook.getSheetAt(0);
+
+        // 将内存的工作簿对象，值读取出来，封装到市场活动的实体类中
+        // 根据sheet页获取行号进行遍历
+        int lastRowNum = sheet.getLastRowNum(); // 获取最后的行号
+//        System.out.println("lastRowNum :::>>>> " + lastRowNum);
+
+        //创建封装的集合
+        List<Activity> activityList = new ArrayList<>();
+
+        // 循环的时候，跳过表头，循环第二行,下标从0开始
+        for (int i = 1;i <= lastRowNum -1; i++) {
+
+            // 创建封装的Activity对象
+            Activity activity = new Activity();
+
+            // 获取每一行的数据
+            HSSFRow row = sheet.getRow(i);
+
+            // 获取最后一行的行号
+            short lastCellNum = row.getLastCellNum();
+//            System.out.println("lastCellNum :::>>>> " + lastCellNum);
+
+            // 遍历获取每个单元格中的数据
+            for (int j = 0; j < lastCellNum; j++) {
+                // 将单元格中的数据赋值给activity对象
+                if (j == 0) {
+                    // 市场活动名称
+                    String activityName = row.getCell(j).getStringCellValue();
+                    activity.setName(activityName);
+                } else if (j == 1) {
+                    // 开始日期
+                    String startDate = row.getCell(j).getStringCellValue();
+                    activity.setStartDate(startDate);
+                } else if (j == 2) {
+                    // 结束日期
+                    String endDate = row.getCell(j).getStringCellValue();
+                    activity.setEndDate(endDate);
+                } else if (j == 3) {
+                    // 成本
+                    String cost = row.getCell(j).getStringCellValue();
+                    activity.setCost(cost);
+                } else if (j == 4) {
+                    // 描述
+                    String description = row.getCell(j).getStringCellValue();
+                    activity.setDescription(description);
+                }
+            }
+
+            // 设置其他属性值
+            activity.setId(UUIDUtil.getUUID());
+            activity.setOwner(owner);
+            activity.setCreateBy(createBy);
+            activity.setCreateTime(createTime);
+
+            // 放入集合中
+            activityList.add(activity);
+        }
+
+//        System.out.println("activityList :::>>> "+activityList.toString());
+
+        if (activityList == null || activityList.size() <= 0){
+            throw new AjaxRequestException("批量导入失败!");
+        }
+        // 批量导入操作
+        int count = activityService.saveImportActivity(activityList);
+
+        if (count <= 0){
+            throw new AjaxRequestException("批量导入失败!");
+        }
+
+        // 返回批量导入的数据数
+        return HandleFlag.successObj("data",count);
+    }
+
+    // 数据查找
+
+
+    // 市场活动详情页操作
     /**
      * 市场活动细节页面显示-跳转
      *
@@ -297,33 +683,17 @@ public class ActivityController {
         // 根据id查询市场活动详细信息
         Activity activity = activityService.queryActivityById(id);
 
-
         // 放入作用域
         model.addAttribute("activity",activity);
 
         return "/workbench/activity/detail";
     }
 
-
-    
-
     public static void main(String[] args) {
-        String sysTime = DateTimeUtil.getSysTime();
-        System.out.println(sysTime);
-
-        String sysTimeForUpload = DateTimeUtil.getSysTimeForUpload();
-        System.out.println(sysTimeForUpload);
-
-
-
-
-        String date = "2021-6-6 12:23:34";
-
-//
-//        String sysTimeForUpload1 = DateTimeUtil.getSysTimeForUpload(date);
-//        System.out.println(sysTimeForUpload1);
-
-
+        int a=12;
+        for (int i =1;i<=a-1;i++){
+            System.out.println(i);
+        }
     }
 
 

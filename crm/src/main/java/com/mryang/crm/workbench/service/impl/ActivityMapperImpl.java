@@ -8,6 +8,7 @@ import com.mryang.crm.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,5 +58,26 @@ public class ActivityMapperImpl implements ActivityService {
                 throw new AjaxRequestException("数据删除失败");
             }
         }
+    }
+
+    @Override
+    public List<Activity> getActivityListByIds(String ids) throws AjaxRequestException {
+
+        String[] activityIds = ids.split("-");
+
+        List<Activity> activities = activityMapper.queryActivityByIds(activityIds);
+
+        if (activities == null || activities.size() <= 0){
+            throw new AjaxRequestException("数据查询失败，无法导出");
+        }
+
+        return activities;
+    }
+
+    @Override
+    public int saveImportActivity(List<Activity> activityList) throws AjaxRequestException {
+
+        return activityMapper.saveImportActivity(activityList);
+
     }
 }
