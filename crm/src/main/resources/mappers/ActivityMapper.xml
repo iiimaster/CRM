@@ -78,6 +78,40 @@
         where a.`owner`=u.id
     </select>
 
+    <select id="queryActivityByConditions" resultType="activity">
+        SELECT
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate,
+            a.cost,
+            a.description,
+            a.createTime,
+            a.createBy,
+            a.editTime,
+            a.editBy
+        FROM
+            `tbl_activity` a,
+            `tbl_user` u
+        <where>
+            a.`owner`=u.id
+            <if test="activityName !='' and activityName != null">
+                and a.name like '%' #{activityName} '%'
+            </if>
+
+            <if test="owner !='' and owner != null">
+                and u.name = #{owner}
+            </if>
+            <if test="startDate !='' and startDate != null">
+                and a.startDate &gt;= #{startDate}
+            </if>
+            <if test="endDate !='' and endDate != null">
+                and a.endDate &lt;= #{endDate}
+            </if>
+        </where>
+    </select>
+
     <select id="queryActivityById" resultType="activity">
         select * from `tbl_activity` where id=#{id}
     </select>

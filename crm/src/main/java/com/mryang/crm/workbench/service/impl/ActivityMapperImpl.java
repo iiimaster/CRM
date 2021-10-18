@@ -80,4 +80,9 @@ public class ActivityMapperImpl implements ActivityService {
         return activityMapper.saveImportActivity(activityList);
 
     }
+
+    @Override
+    public List<Activity> getActivityByConditions(String activityName, String owner, String startDate, String endDate) {
+        return activityMapper.queryActivityByConditions(activityName,owner,startDate,endDate);
+    }
 }

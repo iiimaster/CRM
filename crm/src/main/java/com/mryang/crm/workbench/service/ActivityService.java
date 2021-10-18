@@ -33,4 +33,8 @@ public interface ActivityService {
     List<Activity> getActivityListByIds(String ids) throws AjaxRequestException;
 
     int saveImportActivity(List<Activity> activityList) throws AjaxRequestException;
+
+    List<Activity> getActivityByConditions(String activityName, String owner, String startDate, String endDate);
+
+
 }

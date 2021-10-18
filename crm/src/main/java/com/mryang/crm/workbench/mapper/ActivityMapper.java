@@ -69,4 +69,11 @@ public interface ActivityMapper {
 
     // 批量导入数据
     int saveImportActivity(List<Activity> activityList);
+
+    // 数据检索
+    List<Activity> queryActivityByConditions(@Param("activityName")String activityName,
+                                             @Param("owner")String owner,
+                                             @Param("startDate")String startDate,
+                                             @Param("endDate")String endDate);
+
 }

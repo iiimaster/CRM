@@ -51,11 +51,11 @@ public class ActivityController {
 
 
     /**
-     * 跳转到市场活动页面，展示所有市场活动数据
+     * 跳转到市场活动页面，展示所有市场活动数据--未分页
      *
      * @return
      */
-    @RequestMapping("/toindex.do")
+    /*@RequestMapping("/toindex.do")
     public String toindex(Model model) throws AjaxRequestException {
 
         // 用户信息查询
@@ -71,7 +71,7 @@ public class ActivityController {
         model.addAttribute("users", users);
 
         return "/workbench/activity/index";
-    }
+    }*/
 
 
     /**
@@ -83,18 +83,27 @@ public class ActivityController {
     @RequestMapping("/getActivitisByPageHelper.do")
     public String getActivityList(@RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "8") int pageSize,
+                                  String activityName,
+                                  String owner,
+                                  String startDate,
+                                  String endDate,
                                   Model model) throws AjaxRequestException {
 
 
         // 等同于 limit a,b  使用拦截器实现的
         PageHelper.startPage(page, pageSize);
 
+        List<Activity> activities =null;
         // 查询数据
-        List<Activity> activities = activityService.getActivityList();
-
-        if (activities == null && activities.size() <= 0) {
-            throw new AjaxRequestException("市场活动数据列表查询失败");
+        if (activityName == null && owner == null && startDate== null && endDate==null){ // 单纯分页查询执行
+            activities = activityService.getActivityList();
+            if (activities == null || activities.size() <= 0) {
+                throw new AjaxRequestException("市场活动数据列表查询失败");
+            }
+        }else {// 数据检索时使用此方法
+            activities = activityService.getActivityByConditions(activityName,owner,startDate,endDate);
         }
+
 
         PageInfo pageInfo = new PageInfo<Activity>(activities);
 
@@ -123,6 +132,7 @@ public class ActivityController {
         // 转发到列表页
         return "/workbench/activity/index";
     }
+
 
     // 添加
     /**
@@ -668,7 +678,8 @@ public class ActivityController {
         return HandleFlag.successObj("data",count);
     }
 
-    // 数据查找
+    // 数据检索，通过名称、所有者、开始日期、结束日期查询相关数据
+
 
 
     // 市场活动详情页操作

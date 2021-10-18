@@ -393,13 +393,43 @@
             })
 
 
-            // 8.搜索框功能实现
+            // 8.条件过滤查询实现--未实现(过滤查询后，过滤查询条件显示)
+            // 准备隐藏域,将搜索框中的值保存到隐藏域中，当点击查询按钮时，从输入框中拿出值进行查询
+            // 准备隐藏域
+            // 给条件过滤输入框设置id
+            $("#searchBtn").click(function () {
+                let activityName = $.trim($("#search-activityName").val())
+                let owner = $.trim($("#search-owner").val())
+                let startDate = $.trim($("#search-startDate").val())
+                let endDate = $.trim($("#search-endDate").val())
+
+                //赋值到隐藏域中
+                // activityName = $("#hidden-activityName").val(activityName);
+                // owner = $("#hidden-owner").val(owner);
+                // startDate = $("#hidden-startDate").val(startDate);
+                // endDate = $("#hidden-endDate").val(endDate);
+
+                window.location.href = "workbench/activity/getActivitisByPageHelper.do?activityName=" + activityName + "&owner=" + owner + "&startDate=" + startDate + "&endDate=" + endDate
+
+            })
+
+
+
+
+
 
         });
 
     </script>
 </head>
 <body>
+
+<%--设置隐藏域,用于存放搜索框中的值--%>
+<input type="hidden" id="hidden-id">
+<input type="hidden" id="hidden-activityName">
+<input type="hidden" id="hidden-owner">
+<input type="hidden" id="hidden-startDate">
+<input type="hidden" id="hidden-endDate">
 
 <!-- 创建市场活动的模态窗口 -->
 <div class="modal fade" id="createActivityModal" role="dialog">
@@ -611,14 +641,14 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">名称</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-activityName">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">所有者</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-owner">
                     </div>
                 </div>
 
@@ -626,17 +656,17 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">开始日期</div>
-                        <input class="form-control" type="text" id="startTime"/>
+                        <input class="form-control time" readonly type="text" id="search-startDate"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">结束日期</div>
-                        <input class="form-control" type="text" id="endTime">
+                        <input class="form-control time" readonly type="text" id="search-endDate">
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-default">查询</button>
+                <button id="searchBtn" type="button"  class="btn btn-default">查询</button>
 
             </form>
         </div>
