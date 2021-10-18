@@ -15,4 +15,13 @@ public interface ActivityRemarkService {
 
     // 根据 市场活动id 查询 相关备注信息
     List<ActivityRemark> queryActivityRemarkListByAid(String activityId);
+
+    int saveActivityRemark(String id, String noteContent, String createTime, String createBy,String editFlag, String activityId);
+
+    int deleteRemarkById(String id);
+
+    ActivityRemark queryRemarkById(String id);
+
+    int updateRemark(String id, String noteContent, String editBy, String editTime, String editFlag);
+
 }

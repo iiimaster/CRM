@@ -69,10 +69,43 @@
                 $(this).children("div").children("div").hide();
             })
 
+            // 3.添加备注操作
+            $("#saveRemarkBtn").click(function () {
+                // 获取文本框的值(备注信息)
+                let noteContent = $("#remark").val()
+
+                if (noteContent == ""){
+                    alert("请输入备注信息")
+                    return false;
+                }
+
+                $.ajax({
+                    url:"workbench/activity/saveActivityRemark.do",
+                    data:{
+                        "activityId":"${activity.id}",
+                        "noteContent":noteContent
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        if (data.success){
+                            window.location.href = "workbench/activity/toDetail.do?id=${activity.id}"
+                        }else {
+                            alert(data.msg)
+                        }
+                    }
+                })
+            })
+
+            // 4.修改备注操作,function updateRemark(id){}
+            // 5.删除备注操作,function deleteRemark(id){}
+
+
 
 
         });
 
+        // 备注信息列表查询
         function getActivityRemarkList() {
             $.ajax({
                 url: "workbench/activity/getActivityRemarkList.do?activityId=${activity.id}",
@@ -94,9 +127,10 @@
                             html += '<h5>'+n.noteContent+'</h5>'
                             html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> '+(n.editFlag == 0 ? n.createTime:n.editTime)+' 由'+(n.editFlag == 0 ? n.createBy:n.editBy)+'</small>'
                             html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">'
-                            html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #534646;"></span></a>'
+                            // 在字符串中进行参数传递，要添加单引号的转移，保证n.id是以字符串的方式传递过去的
+                            html += '<a class="myHref" onclick="updateRemark(\''+n.id+'\')" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #534646;"></span></a>'
                             html += '&nbsp;&nbsp;&nbsp;&nbsp;'
-                            html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>'
+                            html += '<a class="myHref" onclick="deleteRemark(\''+n.id+'\')" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>'
                             html += '</div>'
                             html += '</div>'
                             html += '</div>'
@@ -113,6 +147,82 @@
                     }
                 }
             })
+        }
+
+        // 修改备注信息
+        function updateRemark(id) {
+            // alert("id="+id)
+            // 发送请求，根据id获取备注信息
+            $.ajax({
+                url:"workbench/activity/queryRemarkById.do",
+                data:{
+                    "id":id
+                },
+                type:"post",
+                dataType:"json",
+                success:function(data){
+                    if(data.success){
+                        // 将作用域中的数据拿出，并加载到页面
+                        $("#noteContent").val(data.data.noteContent)
+                        $("#remarkId").val(data.data.id)
+                        // 显示模态窗口
+                        $("#editRemarkModal").modal("show")
+
+                        // 点击更新，发送请求，修改操作
+                        $("#updateRemarkBtn").click(function () {
+                            // 拿到修改后的数据
+                            let noteContent = $("#noteContent").val()
+                            let id = $("#remarkId").val()
+
+                            $.ajax({
+                                url:"workbench/activity/updateRemark.do",
+                                data:{
+                                    "id":id,
+                                    "noteContent":noteContent
+                                },
+                                type:"post",
+                                dataType:"json",
+                                success:function(data){
+                                    if(data.success){
+                                        // 刷新备注信息列表
+                                        getActivityRemarkList();
+                                        // 关闭模态窗口
+                                        $("#editRemarkModal").modal("hide")
+                                    }else{
+                                        alert(data.msg)
+                                    }
+                                }
+                            })
+                        })
+
+
+                    }
+                }
+            })
+
+
+        }
+
+        // 删除备注信息
+        function deleteRemark(id) {
+            // alert("id="+id)
+            if (confirm("您确定要删除这条备注吗?")){
+                $.ajax({
+                    url:"workbench/activity/deleteRemark.do",
+                    data:{
+                        "id":id
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        if (data.success){
+                            getActivityRemarkList();
+                        }else{
+                            alert(data.msg)
+                        }
+                    }
+                })
+            }
         }
 
     </script>
@@ -135,7 +245,7 @@
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">内容</label>
+                        <label for="noteContent" class="col-sm-2 control-label">内容</label>
                         <div class="col-sm-10" style="width: 81%;">
                             <textarea class="form-control" rows="3" id="noteContent"></textarea>
                         </div>
@@ -244,11 +354,10 @@
 
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
-            <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"
-                      placeholder="添加备注..."></textarea>
+            <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2" placeholder="添加备注..."></textarea>
             <p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
                 <button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button id="saveRemarkBtn" type="button" class="btn btn-primary">保存</button>
             </p>
         </form>
     </div>

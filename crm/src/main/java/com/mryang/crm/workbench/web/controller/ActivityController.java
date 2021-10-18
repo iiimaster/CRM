@@ -729,6 +729,114 @@ public class ActivityController {
         return HandleFlag.successObj("data",activityRemarks);
     }
 
+
+    /**
+     * 添加备注信息
+     *
+     * @param activityId  添加备注信息的市场活动编号
+     * @param noteContent 备注信息
+     * @return
+     */
+    @RequestMapping("/saveActivityRemark.do")
+    @ResponseBody
+    public Map<String, Object> saveActivityRemark(String activityId,
+                                                  String noteContent,
+                                                  HttpSession session) throws AjaxRequestException {
+        // 获取创建人信息
+        User user = (User) session.getAttribute("user");
+        String createBy = user.getName();
+
+        // 获取创建时间
+        String createTime = DateTimeUtil.getSysTime();
+
+        // 获取备注信息编号
+        String id = UUIDUtil.getUUID();
+
+        // 设置修改标志
+        String editFlag = "0";
+
+        // 添加市场活动信息
+        int i = activityRemarkService.saveActivityRemark(id,noteContent,createTime,createBy,editFlag,activityId);
+
+        if (i<=0){
+            throw new AjaxRequestException("备注信息添加失败");
+        }
+
+        return HandleFlag.successTrue();
+    }
+
+    /**
+     * 删除备注信息
+     * @param id 备注信息编号
+     * @return
+     */
+    @RequestMapping("/deleteRemark.do")
+    @ResponseBody
+    public Map<String, Object> deleteRemark(String id) throws AjaxRequestException {
+
+        // 删除操作
+        int i = activityRemarkService.deleteRemarkById(id);
+
+        if (i<= 0){
+            throw new AjaxRequestException("备注信息删除失败");
+        }
+
+        return HandleFlag.successTrue();
+
+    }
+
+    /**
+     * 查询备注信息
+     * @param id 备注信息id
+     * @return
+     * @throws TraditionRequestException
+     */
+    @RequestMapping("/queryRemarkById.do")
+    @ResponseBody
+    public Map<String ,Object> queryRemarkById(String id) throws TraditionRequestException {
+        ActivityRemark activityRemark = activityRemarkService.queryRemarkById(id);
+
+        if (activityRemark == null){
+            throw new TraditionRequestException("备注信息查询失败");
+        }
+
+        return HandleFlag.successObj("data",activityRemark);
+    }
+
+    /**
+     * 修改备注信息
+     * @param id 备注信息id
+     * @param noteContent 修改后的备注信息
+     * @param session 作用域
+     * @return
+     * @throws AjaxRequestException
+     */
+    @RequestMapping("/updateRemark.do")
+    @ResponseBody
+    public Map<String,Object> updateRemark(String id,
+                                           String noteContent,
+                                           HttpSession session) throws AjaxRequestException {
+
+        // 获取修改人
+        User user = (User) session.getAttribute("user");
+        String editBy = user.getName();
+        // 获取修改时间
+        String editTime = DateTimeUtil.getSysTime();
+
+        // 设置修改标识
+        String editFlag = "1";
+
+        // 修改
+        int i = activityRemarkService.updateRemark(id, noteContent, editBy, editTime, editFlag);
+        if (i<=0){
+            throw new AjaxRequestException("备注修改失败");
+        }
+
+        return HandleFlag.successTrue();
+    }
+
+
+
     public static void main(String[] args) {
         int a=12;
         for (int i =1;i<=a-1;i++){
