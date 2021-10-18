@@ -1,5 +1,7 @@
 package com.mryang.crm.workbench.pojo;
 
+import java.io.Serializable;
+
 /**
  * @author Genius
  * @version 1.0.0
@@ -7,7 +9,7 @@ package com.mryang.crm.workbench.pojo;
  * @Description TODO 市场活动
  * @createTime 2021年10月10日 12:37:00
  */
-public class Activity {
+public class Activity implements Serializable {
 
     // 市场活动数据编号，唯一标识
     private String id;

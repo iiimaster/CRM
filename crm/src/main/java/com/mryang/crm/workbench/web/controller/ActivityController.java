@@ -3,12 +3,15 @@ package com.mryang.crm.workbench.web.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mryang.crm.exception.AjaxRequestException;
+import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.pojo.User;
 import com.mryang.crm.settings.service.UserService;
 import com.mryang.crm.utils.DateTimeUtil;
 import com.mryang.crm.utils.HandleFlag;
 import com.mryang.crm.utils.UUIDUtil;
 import com.mryang.crm.workbench.pojo.Activity;
+import com.mryang.crm.workbench.pojo.ActivityRemark;
+import com.mryang.crm.workbench.service.ActivityRemarkService;
 import com.mryang.crm.workbench.service.ActivityService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -49,6 +52,9 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
+    @Autowired
+    private ActivityRemarkService activityRemarkService;
+
 
     /**
      * 跳转到市场活动页面，展示所有市场活动数据--未分页
@@ -73,7 +79,7 @@ public class ActivityController {
         return "/workbench/activity/index";
     }*/
 
-
+    // 数据检索，通过名称、所有者、开始日期、结束日期查询相关数据
     /**
      * 市场活动数据列表查询-分页查询
      *
@@ -678,8 +684,6 @@ public class ActivityController {
         return HandleFlag.successObj("data",count);
     }
 
-    // 数据检索，通过名称、所有者、开始日期、结束日期查询相关数据
-
 
 
     // 市场活动详情页操作
@@ -689,15 +693,40 @@ public class ActivityController {
      * @return
      */
     @RequestMapping("/toDetail.do")
-    public String toDetail(String id,Model model) {
+    public String toDetail(String id,Model model) throws TraditionRequestException {
 
         // 根据id查询市场活动详细信息
         Activity activity = activityService.queryActivityById(id);
+        if(activity == null){
+            throw new TraditionRequestException("数据查询失败");
+        }
 
         // 放入作用域
         model.addAttribute("activity",activity);
 
         return "/workbench/activity/detail";
+    }
+
+
+    /**
+     * 查询市场活动备注信息
+     * @param activityId 市场活动的id
+     * @return 备注信息
+     * @throws AjaxRequestException 查询失败异常
+     */
+    @RequestMapping("getActivityRemarkList.do")
+    @ResponseBody
+    public Map<String, Object> getActivityRemarkList(String activityId) throws AjaxRequestException {
+
+        // 获取对应活动备注信息列表
+        List<ActivityRemark> activityRemarks = activityRemarkService.queryActivityRemarkListByAid(activityId);
+        if (activityRemarks == null || activityRemarks.size() <= 0){
+            // 没有数据则加载一个空的数据到页面
+            return HandleFlag.successObj("data",activityRemarks);
+        }
+
+        // 成功拿到数据，并返回
+        return HandleFlag.successObj("data",activityRemarks);
     }
 
     public static void main(String[] args) {
