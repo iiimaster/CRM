@@ -28,4 +28,8 @@ public interface DictionaryValueMapper {
     int deleteValueById(String id);
 
     int deleteValueByTypeCode(String id);
+
+    List<DictionaryValue> getClueState();
+
+    List<DictionaryValue> getClueSource();
 }

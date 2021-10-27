@@ -67,4 +67,14 @@ public class DictionaryValueServiceImpl implements DictionaryValueService {
 
 
     }
+
+    @Override
+    public List<DictionaryValue> getClueState() {
+        return dictionaryValueMapper.getClueState();
+    }
+
+    @Override
+    public List<DictionaryValue> getClueSource() {
+        return dictionaryValueMapper.getClueSource();
+    }
 }

@@ -23,4 +23,10 @@ public interface DictionaryValueService {
     int updateValue(DictionaryValue dictionaryValue);
 
     void deleteValueById(String ids) throws TraditionRequestException;
+
+    // 获取线索状态
+    List<DictionaryValue> getClueState();
+
+    // 获取线索来源
+    List<DictionaryValue> getClueSource();
 }

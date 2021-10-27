@@ -19,6 +19,18 @@
         from `tbl_dic_value` where id=#{id}
     </select>
 
+    <select id="getClueState" resultType="dictionaryValue">
+        select <include refid="value" />
+        from `tbl_dic_value`
+        where typeCode="clueState"
+    </select>
+
+    <select id="getClueSource" resultType="dictionaryValue">
+        select <include refid="value" />
+        from `tbl_dic_value`
+        where typeCode="source"
+    </select>
+
     <update id="updateValue" parameterType="dictionaryValue">
         update `tbl_dic_value`
         <set>

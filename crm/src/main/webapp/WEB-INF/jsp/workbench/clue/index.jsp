@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%
 String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
@@ -16,16 +17,52 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
-<script type="text/javascript">
+
+<%--导入分页组件
+	1、在jquery包中导入 bs_pagination 分页组件
+	2、引入分页组件
+	3、把原本的分页插件部分的div改为
+		<div id="activityPage"></div>
+
+--%>
+	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
+	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
+
+
+
+	<script type="text/javascript">
 
 	$(function(){
-		// 1、线索列表加载-分页
-
+		// 1、线索列表加载-分页,默认加载第一页，每页加载8条数据
+		getClueList(1,8);
 
 		// 2、条件过滤实现
+		$("#retrieve").click(function () {
+			// 获取检索输入框中的值
+			let fullname = $("#form-fullname_appellation").val()
+			let company = $("#form-company").val()
+			let createBy = $("#form-createBy").val()
+			let phone = $("#form-phone").val()
+			let myphone = $("#form-myphone").val()
+			let source = $("#form-source").val()
+			let state = $("#form-state").val()
 
+			// 将检索框中的值放入隐藏域，方便数据展示完毕后的展示
+			$("#hidden_fillname").val(fullname)
+			$("#hidden_company").val(company)
+			$("#hidden_createBy").val(createBy)
+			$("#hidden_phone").val(phone)
+			$("#hidden_myphone").val(myphone)
+			$("#hidden_source").val(source)
+			$("#hidden_state").val(state)
+
+			// 发送请求，将数据返回并进行检索
+			getClueList(1,2,fullname,company,phone,source,createBy,myphone,state)
+		})
 
 		// 3、添加线索操作
+
 
 
 		// 4、修改线索操作
@@ -38,10 +75,110 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 		
 	});
+
+
+
+	// 分页数据查询
+	function getClueList(page, pageSize,fullname,company,phone,source,createBy,myphone,state) {
+
+		// 发送请求
+		$.ajax({
+			url:"workbench/clue/getClueListByPage.do",
+			data:{
+				"page":page,
+				"pageSize":pageSize,
+				"fullname":fullname,
+				"company":company,
+				"phone":phone,
+				"source":source,
+				"createBy":createBy,
+				"myphone":myphone,
+				"state":state
+			},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+
+				let html = '';
+
+				if (data.success){
+					// alert("ok")
+					// console.log(data.data)
+
+					// 将数据放入字符串标签
+					$.each(data.data,function (i,n) {
+						html += '<tr class="'+(i%2==0 ? '':'active')+'">'
+						html += '<td><input type="checkbox" value="'+n.id+'" /></td>'
+						html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="toDetail'+"('"+n.id+"')"+'">'+n.fullname+n.appellation+'</a></td>'
+						html += '<td>'+n.company+'</td>'
+						html += '<td>'+n.phone+'</td>'
+						html += '<td>'+n.mphone+'</td>'
+						html += '<td>'+n.source+'</td>'
+						html += '<td>'+n.createBy+'</td>'
+						html += '<td>'+n.state+'</td>'
+						html += '</tr>'
+					})
+
+					// 将字符串标签放入页面
+					$("#clueTBody").html(html)
+
+					//初始化分页组件
+					$("#cluePage").bs_pagination({
+						currentPage: page, // 页码
+						rowsPerPage: pageSize, // 每页显示的记录条数
+						maxRowsPerPage: 15, // 每页最多显示的记录条数
+						totalPages: data.totalPages, // 总页数
+						totalRows: data.totalCount, // 总记录条数
+
+						visiblePageLinks: 3, // 显示几个卡片
+
+						showGoToPage: true,
+						showRowsPerPage: true,
+						showRowsInfo: true,
+						showRowsDefaultInfo: true,
+
+						//当点击分页组件时,触发的方法
+						onChangePage : function(event, data){
+							getClueList(data.currentPage , data.rowsPerPage);
+						}
+					});
+					// console.log(data.data[1])
+				}else{
+					alert(data.msg)
+				}
+			}
+		})
+	}
+
+	// 前往线索详情页
+	function toDetail(id) {
+		// alert(id)
+		window.location.href="workbench/clue/toDetail.do?id="+id
+	}
 	
 </script>
 </head>
 <body>
+
+<%--条件过滤：隐藏域--%>
+	<%--名称--%>
+	<div hidden id="hidden_fillname"></div>
+	<%--公司--%>
+	<div hidden id="hidden_company"></div>
+	<%--公司座机--%>
+	<div hidden id="hidden_phone"></div>
+	<%--线索来源--%>
+	<div hidden id="hidden_source"></div>
+	<%--所有者--%>
+	<div hidden id="hidden_createBy"></div>
+	<%--手机--%>
+	<div hidden id="hidden_myphone"></div>
+	<%--线索状态--%>
+	<div hidden id="hidden_state"></div>
+
+
+
+	<div hidden id="hidden_"></div>
 
 	<!-- 创建线索的模态窗口 -->
 	<div class="modal fade" id="createClueModal" role="dialog">
@@ -156,9 +293,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						
 
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
+							<label for="create-description" class="col-sm-2 control-label">线索描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 						
@@ -377,31 +514,34 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="form-fullname_appellation" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control"  id="form-company" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control"  id="form-phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control">
+					  <select class="form-control"  id="form-source">
 					  	  <option></option>
-					  	  <option>广告</option>
-						  <option>推销电话</option>
+						  <c:forEach items="${clueSource}" var="source">
+							  <option value="${source.value}">${source.value}</option>
+						  </c:forEach>
+
+						  <%--<option>推销电话</option>
 						  <option>员工介绍</option>
 						  <option>外部介绍</option>
 						  <option>在线商场</option>
@@ -413,7 +553,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						  <option>交易会</option>
 						  <option>web下载</option>
 						  <option>web调研</option>
-						  <option>聊天</option>
+						  <option>聊天</option>--%>
 					  </select>
 				    </div>
 				  </div>
@@ -423,7 +563,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control"  id="form-createBy" type="text">
 				    </div>
 				  </div>
 				  
@@ -432,27 +572,30 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="form-myphone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control">
-					  	<option></option>
-					  	<option>试图联系</option>
+					  <select class="form-control" id="form-state">
+						  <option></option>
+						  <c:forEach items="${clueState}" var="State">
+							  <option value="${State.value}">${State.value}</option>
+						  </c:forEach>
+					  	<%--<option>试图联系</option>
 					  	<option>将来联系</option>
 					  	<option>已联系</option>
 					  	<option>虚假线索</option>
 					  	<option>丢失线索</option>
 					  	<option>未联系</option>
-					  	<option>需要条件</option>
+					  	<option>需要条件</option>--%>
 					  </select>
 				    </div>
 				  </div>
 
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" class="btn btn-default" id="retrieve">查询</button>
 				  
 				</form>
 			</div>
@@ -465,7 +608,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				
 				
 			</div>
-			<div style="position: relative;top: 50px;">
+			<div style="position: relative;top: 50px; height: 390px">
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
@@ -479,8 +622,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="clueTBody">
+						<%--<tr>
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">李四先生</a></td>
 							<td>动力节点</td>
@@ -489,35 +632,28 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>广告</td>
 							<td>zhangsan</td>
 							<td>已联系</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">李四先生</a></td>
-                            <td>动力节点</td>
-                            <td>010-84846003</td>
-                            <td>12345678901</td>
-                            <td>广告</td>
-                            <td>zhangsan</td>
-                            <td>已联系</td>
-                        </tr>
+						</tr>--%>
 					</tbody>
 				</table>
 			</div>
-			
-			<div style="height: 50px; position: relative;top: 60px;">
+
+			<%--分页组件实现分页--%>
+			<div id="cluePage"></div>
+
+			<%--<div style="height: 50px; position: relative;top: 60px;">
 				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
+					<button type="button" class="btn btn-default" style="cursor: default;">共<b>${count}</b>条记录</button>
 				</div>
 				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
 					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
 					<div class="btn-group">
 						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
+							8
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
+							<li><a onclick="getClueList(1,8)">8</a></li>
+							<li><a onclick="getClueList(1,15)">15</a></li>
 						</ul>
 					</div>
 					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
@@ -525,7 +661,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<div style="position: relative;top: -88px; left: 285px;">
 					<nav>
 						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
+							<li><a onclick="getClueList(1,2)">首页</a></li>
 							<li class="disabled"><a href="#">上一页</a></li>
 							<li class="active"><a href="#">1</a></li>
 							<li><a href="#">2</a></li>
@@ -533,13 +669,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<li><a href="#">4</a></li>
 							<li><a href="#">5</a></li>
 							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
+							<li><a onclick="getClueList(${count},${pageSize})">末页</a></li>
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div>--%>
 			
 		</div>
+
 		
 	</div>
 </body>
