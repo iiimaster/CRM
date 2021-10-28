@@ -31,6 +31,12 @@
         where typeCode="source"
     </select>
 
+    <select id="findValueByTypeCode" resultType="dictionaryValue">
+        select <include refid="value" />
+        from `tbl_dic_value`
+        where typeCode=#{code}
+    </select>
+
     <update id="updateValue" parameterType="dictionaryValue">
         update `tbl_dic_value`
         <set>

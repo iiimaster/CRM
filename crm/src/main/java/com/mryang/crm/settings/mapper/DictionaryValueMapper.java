@@ -32,4 +32,6 @@ public interface DictionaryValueMapper {
     List<DictionaryValue> getClueState();
 
     List<DictionaryValue> getClueSource();
+
+    List<DictionaryValue> findValueByTypeCode(String code);
 }

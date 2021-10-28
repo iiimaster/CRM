@@ -4,6 +4,7 @@ import com.mryang.crm.exception.TraditionRequestException;
 import com.mryang.crm.settings.pojo.DictionaryValue;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Genius
@@ -29,4 +30,6 @@ public interface DictionaryValueService {
 
     // 获取线索来源
     List<DictionaryValue> getClueSource();
+
+
 }

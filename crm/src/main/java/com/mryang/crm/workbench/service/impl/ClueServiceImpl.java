@@ -41,4 +41,9 @@ public class ClueServiceImpl implements ClueService {
     public List<Clue> queryClueByRetrieve(String fullname, String company, String phone, String source, String createBy, String myphone, String state) {
         return clueMapper.queryClueByRetrieve(fullname,company,phone,source,createBy,myphone,state);
     }
+
+    @Override
+    public int saveClue(String id, String owner, String company, String appellation, String fullname, String job, String email, String phone, String website, String mphone, String state, String source, String description, String contactSummary, String nextContactTime,String createBy,String createTime, String address) {
+        return clueMapper.saveClue(id,owner, company, appellation, fullname, job, email, phone, website, mphone, state, source, description, contactSummary, nextContactTime,createBy,createTime, address);
+    }
 }

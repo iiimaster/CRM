@@ -7,7 +7,7 @@
         id,
         fullname,
         appellation,
-        `name`,
+        owner,
         company,
         job,
         email,
@@ -93,6 +93,50 @@
             </if>
         </where>
     </select>
+
+
+    <insert id="saveClue">
+        insert into tbl_clue(
+        id,
+        owner,
+        company,
+        appellation,
+        fullname,
+        job,
+        email,
+        phone,
+        website,
+        mphone,
+        `state`,
+        `source`,
+        description,
+        contactSummary,
+        nextContactTime,
+        createBy,
+        createTime,
+        address)
+        values(
+        #{id},
+        #{owner},
+        #{company},
+        #{appellation},
+        #{fullname},
+        #{job},
+        #{email},
+        #{phone},
+        #{website},
+        #{mphone},
+        #{state},
+        #{source},
+        #{description},
+        #{contactSummary},
+        #{nextContactTime},
+        #{createBy},
+        #{createTime},
+        #{address}
+        )
+
+    </insert>
 
 
 </mapper>

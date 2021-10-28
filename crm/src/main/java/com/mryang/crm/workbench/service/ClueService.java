@@ -22,4 +22,8 @@ public interface ClueService {
 
     // 条件检索
     List<Clue> queryClueByRetrieve(String fullname, String company, String phone, String source, String createBy, String myphone, String state);
+
+    // 添加线索
+    int saveClue(String id, String owner, String company, String appellation, String fullname, String job, String email, String phone, String website, String mphone, String state, String source, String description, String contactSummary, String nextContactTime,String createBy,String createTime, String address);
+
 }

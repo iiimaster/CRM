@@ -2,9 +2,13 @@ package com.mryang.crm.workbench.web.controller;
 
 import com.mryang.crm.exception.AjaxRequestException;
 import com.mryang.crm.settings.pojo.DictionaryValue;
+import com.mryang.crm.settings.pojo.User;
 import com.mryang.crm.settings.service.DictionaryValueService;
+import com.mryang.crm.settings.service.UserService;
+import com.mryang.crm.utils.DateTimeUtil;
 import com.mryang.crm.utils.HandleFlag;
 import com.mryang.crm.utils.PaginationVo;
+import com.mryang.crm.utils.UUIDUtil;
 import com.mryang.crm.workbench.pojo.Clue;
 import com.mryang.crm.workbench.service.ActivityService;
 import com.mryang.crm.workbench.service.ClueService;
@@ -30,6 +34,9 @@ public class ClueController {
 
     @Autowired
     private ClueService clueService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private DictionaryValueService dictionaryValueService;
@@ -120,6 +127,61 @@ public class ClueController {
 
         return HandleFlag.successObj("msg", clues);
     }*/
+
+    /**
+     * 打开创建的模态窗口-获取页面要加载的相关数据
+     */
+    @RequestMapping("/toCreateClueModal.do")
+    @ResponseBody
+    public Map<String, Object> toCreateClueModal() throws AjaxRequestException {
+        // 获取所有用户信息
+        List<User> users = userService.queryAllUser();
+        if (users == null || users.size() <= 0) {
+            throw new AjaxRequestException("用户信息查询失败！");
+        }
+
+        return HandleFlag.successObj("data", users);
+    }
+
+
+    /**
+     * 插入数据
+     * @return
+     */
+    @RequestMapping("/createClue.do")
+    @ResponseBody
+    public Map<String, Object> createClue(String owner,
+                                          String company,
+                                          String appellation,
+                                          String fullname,
+                                          String job,
+                                          String email,
+                                          String phone,
+                                          String website,
+                                          String mphone,
+                                          String state,
+                                          String source,
+                                          String description,
+                                          String contactSummary,
+                                          String nextContactTime,
+                                          String address) {
+
+        // 获取创建人
+        User user = userService.queryUserById(owner);
+        String createBy = user.getName();
+        // 获取创建时间
+        String createTime = DateTimeUtil.getSysTime();
+        // 获取插入id
+        String id = UUIDUtil.getUUID();
+
+        // 插入数据
+        clueService.saveClue(id,owner, company, appellation, fullname, job, email, phone, website, mphone, state, source, description, contactSummary, nextContactTime,createBy,createTime, address);
+
+
+
+        return HandleFlag.successTrue();
+    }
+
 
     /**
      * 跳转到线索详情页

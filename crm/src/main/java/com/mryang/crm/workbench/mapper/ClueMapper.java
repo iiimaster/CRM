@@ -44,4 +44,23 @@ public interface ClueMapper {
                                    @Param("myphone") String myphone,
                                    @Param("state") String state);
 
+    // 添加线索
+    int saveClue(@Param("id") String id,
+                 @Param("owner") String owner,
+                 @Param("company") String company,
+                 @Param("appellation") String appellation,
+                 @Param("fullname") String fullname,
+                 @Param("job") String job,
+                 @Param("email") String email,
+                 @Param("phone") String phone,
+                 @Param("website") String website,
+                 @Param("mphone") String mphone,
+                 @Param("state") String state,
+                 @Param("source") String source,
+                 @Param("description") String description,
+                 @Param("contactSummary") String contactSummary,
+                 @Param("nextContactTime") String nextContactTime,
+                 @Param("createBy") String createBy,
+                 @Param("createTime") String createTime,
+                 @Param("address") String address);
 }

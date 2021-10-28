@@ -13,7 +13,9 @@ import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Genius
@@ -107,7 +109,26 @@ public class DictionaryTypeServiceImpl implements DictionaryTypeService {
         }
     }
 
+    @Override
+    public Map<String, List<DictionaryValue>> findDicValueList() {
 
+        // 初始化封装的Map集合
+        HashMap<String, List<DictionaryValue>> sysLodeMap = new HashMap<>();
+
+        // 查询所有字典类型
+        List<DictionaryType> dictionaryTypeList = dictionaryTypeMapper.findAll();
+
+        // 遍历数据字典类型，查询数据集合
+        for (DictionaryType dictionaryType : dictionaryTypeList) {
+            // 根据typeCode查询数据字典值
+            List<DictionaryValue> valueByTypeCode = dictionaryValueMapper.findValueByTypeCode(dictionaryType.getCode());
+
+            // 将数据以键值对的形式存入Map集合
+            sysLodeMap.put(dictionaryType.getCode()+"List", valueByTypeCode);
+        }
+
+        return sysLodeMap;
+    }
 
 
 }

@@ -6,6 +6,7 @@ import com.mryang.crm.settings.pojo.DictionaryType;
 import com.mryang.crm.settings.pojo.DictionaryValue;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Genius
@@ -31,6 +32,5 @@ public interface DictionaryTypeService {
 
     void deleteType(String[] ids) throws AjaxRequestException;
 
-
-
+    Map<String, List<DictionaryValue>> findDicValueList();
 }
